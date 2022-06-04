@@ -1,14 +1,13 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using KryptoMin.Application.Contracts;
 using System.Collections.Generic;
+using KryptoMin.Application.Models;
 
 namespace KryptoMin.Function
 {
@@ -28,11 +27,7 @@ namespace KryptoMin.Function
         {
             var purchases = new List<Purchase>
             {
-                new Purchase
-                {
-                    Currency = "usd",
-                    Date = DateTime.Now.AddDays(-1)
-                }
+                new Purchase(DateTime.Now.AddDays(-1), "usd")
             };
             var result = await _currencyProvider.Get(purchases);
             log.LogInformation("C# HTTP trigger function processed a request.");

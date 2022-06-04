@@ -1,4 +1,5 @@
 using KryptoMin.Application.Contracts;
+using KryptoMin.Infra.HttpClients;
 using KryptoMin.Infra.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ namespace KryptoMin.Function
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient<NbpHttpClient>();
 
             builder.Services.AddSingleton<ICurrencyProvider, NbpCurrencyProvider>();
         }

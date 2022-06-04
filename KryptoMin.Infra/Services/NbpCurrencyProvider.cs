@@ -1,27 +1,16 @@
 using KryptoMin.Application.Contracts;
-using Newtonsoft.Json;
+using KryptoMin.Application.Models;
+using KryptoMin.Infra.HttpClients;
 
 namespace KryptoMin.Infra.Services
 {
-
-    public class Rates
-    {
-        public double Mid { get; set; }
-        public string No { get; set; }
-    }
-
-    public class NbpExchangeRatesResponse
-    {
-        public IEnumerable<Rates> Rates { get; set; }
-    }
     public class NbpCurrencyProvider : ICurrencyProvider
     {
-        private HttpClient _httpClient;
+        private readonly NbpHttpClient _httpClient;
 
-        public NbpCurrencyProvider(IHttpClientFactory httpClientFactory)
+        public NbpCurrencyProvider(NbpHttpClient client)
         {
-            _httpClient = httpClientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri("http://api.nbp.pl/api/");
+            _httpClient = client;
         }
 
         public async Task<IEnumerable<Purchase>> Get(IEnumerable<Purchase> purchases)
@@ -30,21 +19,16 @@ namespace KryptoMin.Infra.Services
             foreach (var purchase in purchases)
             {
                 var url = $"exchangerates/rates/a/{purchase.Currency.ToLower()}/{purchase.FormattedDate}/?format=json";
-                var response = JsonConvert.DeserializeObject<NbpExchangeRatesResponse>(await _httpClient.GetStringAsync(url));
+                var response = await _httpClient.Get(purchase.Currency.ToLower(), purchase.FormattedDate);
 
                 if (response is null || !response.Rates.Any())
                 {
-                    purchase.FailedToGetExchangeRate = true;
+                    result.Add(purchase.FailToGetExchangeRate());
                 }
                 else
                 {
-                    var rate = response.Rates.First();
-                    purchase.ExchangeRate = new ExchangeRate
-                    {
-                        Number = rate.No,
-                        Value = rate.Mid
-                    };
-                    result.Add(purchase);
+                    var rate = response.Rates.First();   
+                    result.Add(purchase.SetExchangeRate(rate.Mid, rate.No));
                 }
             }
 
