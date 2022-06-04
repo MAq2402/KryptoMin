@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Services", "KryptoMin.Services\KryptoMin.Services.csproj", "{EE3C8730-BDB5-4944-9719-D1E00E7050CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Application", "KryptoMin.Application\KryptoMin.Application.csproj", "{EE3C8730-BDB5-4944-9719-D1E00E7050CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Infra", "KryptoMin.Infra\KryptoMin.Infra.csproj", "{6264497D-BD35-4A85-93AF-556B42224C28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Function", "KryptoMin.Function\KryptoMin.Function.csproj", "{ADA197E3-4D04-482D-AE96-CC2D8CE900CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +26,9 @@ Global
 		{6264497D-BD35-4A85-93AF-556B42224C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6264497D-BD35-4A85-93AF-556B42224C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6264497D-BD35-4A85-93AF-556B42224C28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADA197E3-4D04-482D-AE96-CC2D8CE900CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA197E3-4D04-482D-AE96-CC2D8CE900CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA197E3-4D04-482D-AE96-CC2D8CE900CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA197E3-4D04-482D-AE96-CC2D8CE900CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
