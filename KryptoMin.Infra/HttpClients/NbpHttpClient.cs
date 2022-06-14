@@ -1,9 +1,14 @@
 using KryptoMin.Infra.Models.Nbp;
 using Newtonsoft.Json;
 
+public interface INbpHttpClient
+{
+    Task<ExchangeRatesResponse> Get(string currency, string date);
+}
+
 namespace KryptoMin.Infra.HttpClients
 {
-    public class NbpHttpClient
+    public class NbpHttpClient : INbpHttpClient
     {
         private readonly HttpClient _httpClient;
 

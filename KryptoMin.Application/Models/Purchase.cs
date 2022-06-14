@@ -2,31 +2,26 @@ namespace KryptoMin.Application.Models
 {
     public class Purchase
     {
-        public Purchase(DateTime date, string currency)
+        public Purchase(DateTime date, string method, Amount amount, string price, Amount fees, 
+            string finalAmount, string transactionId)
         {
             Date = date;
-            Currency = currency;    
-            FailedToGetExchangeRate = false;
+            Method = method;
+            Amount = amount;
+            Price = price;
+            Fees = fees;
+            FinalAmount = finalAmount;
+            TransactionId = transactionId;
         }
 
         public DateTime Date { get; }
-        public string Currency { get; }
-        public ExchangeRate ExchangeRate { get; private set; }
-        public string FormattedDate => Date.ToString("yyyy-MM-dd");
-        public bool FailedToGetExchangeRate { get; private set; }
-
-        public Purchase FailToGetExchangeRate()
-        {
-            var result = new Purchase(Date, Currency);
-            result.FailedToGetExchangeRate = true;
-            return result;
-        }
-
-        public Purchase SetExchangeRate(double value, string number)
-        {
-            var result = new Purchase(Date, Currency);
-            result.ExchangeRate = new ExchangeRate(value, number);
-            return result;
-        }
+        public DateTime DayBefore => Date.AddDays(-1);
+        public string FormattedDayBefore => DayBefore.ToString("yyyy-MM-dd");
+        public string Method { get; }
+        public Amount Amount { get; }
+        public string Price { get; }
+        public Amount Fees { get; }
+        public string FinalAmount { get; }
+        public string TransactionId { get; }
     }
 }
