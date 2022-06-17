@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace KryptoMin.Application.Models
 {
-    public class Amount
+    public class Amount : ValueObject
     {
         public Amount(string amount)
         {
@@ -12,7 +12,13 @@ namespace KryptoMin.Application.Models
             Currency = splittedAmount[1];
         }
 
-        public decimal Value { get; set; }
-        public string Currency { get; set; }
+        public decimal Value { get; }
+        public string Currency { get; }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+            yield return Currency;
+        }
     }
 }

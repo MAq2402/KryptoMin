@@ -7,7 +7,7 @@ namespace KryptoMin.Infra.Models.Nbp
 
     public class Rates
     {
-        public double Mid { get; set; }
+        public decimal Mid { get; set; }
         public string No { get; set; }
     }
 }

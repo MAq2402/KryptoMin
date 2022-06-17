@@ -11,6 +11,8 @@ namespace KryptoMin.Application.Models
         public string TransactionId { get; set; }
         public ExchangeRate ExchangeRateFees { get; set; }
         public ExchangeRate ExchangeRateAmount { get; set; }
-        public double AmountInPln { get; set; } // decimal?
+        public bool IsSell { get; set; }
+        public decimal Costs { get; set; }
+        public decimal Profits { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Models;
+using KryptoMin.Infra.HttpClients;
 
 namespace KryptoMin.Infra.Services
 {

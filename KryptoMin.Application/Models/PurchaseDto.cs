@@ -10,5 +10,6 @@ namespace KryptoMin.Application.Models
         public string FinalAmount { get; set; }
         public string Status { get; set; }
         public string TransactionId { get; set; }
+        public bool IsSell { get; set; }
     }
 }

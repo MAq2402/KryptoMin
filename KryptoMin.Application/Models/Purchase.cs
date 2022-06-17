@@ -3,7 +3,7 @@ namespace KryptoMin.Application.Models
     public class Purchase
     {
         public Purchase(DateTime date, string method, Amount amount, string price, Amount fees, 
-            string finalAmount, string transactionId)
+            string finalAmount, bool isSell, string transactionId)
         {
             Date = date;
             Method = method;
@@ -11,6 +11,7 @@ namespace KryptoMin.Application.Models
             Price = price;
             Fees = fees;
             FinalAmount = finalAmount;
+            IsSell = isSell; 
             TransactionId = transactionId;
         }
 
@@ -22,6 +23,7 @@ namespace KryptoMin.Application.Models
         public string Price { get; }
         public Amount Fees { get; }
         public string FinalAmount { get; }
+        public bool IsSell { get; set; }
         public string TransactionId { get; }
     }
 }

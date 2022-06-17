@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using KryptoMin.Application.Models;
 using System.Threading.Tasks;
 using FluentAssertions;
-using System;
 using KryptoMin.Infra.Models.Nbp;
+using KryptoMin.Infra.HttpClients;
 
 namespace KryptoMin.Infra.Tests;
 
@@ -30,7 +30,7 @@ public class NbpExchangeRateProviderTests
         mockedNbpHttpClient.Setup(x => x.Get(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new ExchangeRatesResponse 
             { 
-                Rates = new List<Rates>() { new Rates { Mid = 2.5, No = "1" } 
+                Rates = new List<Rates>() { new Rates { Mid = 2.5m, No = "1" } 
             } 
         });
         var sut = new NbpExchangeRateProvider(mockedNbpHttpClient.Object);

@@ -1,8 +1,8 @@
 namespace KryptoMin.Application.Models
 {
-    public class ExchangeRate
+    public class ExchangeRate : ValueObject
     {
-        public ExchangeRate(double value, string number, string date, string currency)
+        public ExchangeRate(decimal value, string number, string date, string currency)
         {
             Value = value;
             Number = number;
@@ -10,9 +10,16 @@ namespace KryptoMin.Application.Models
             Currency = currency;
         }
 
-        public double Value { get;  }
+        public decimal Value { get;  }
         public string Number { get; }
         public string Date { get; }
         public string Currency { get; }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Value;
+            yield return Date;
+            yield return Currency;
+        }
     }
 }
