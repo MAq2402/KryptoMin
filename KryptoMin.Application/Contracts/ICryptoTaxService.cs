@@ -1,4 +1,4 @@
-using KryptoMin.Application.Models;
+using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Application.Contracts
 {

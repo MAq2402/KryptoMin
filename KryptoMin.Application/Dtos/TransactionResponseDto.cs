@@ -1,6 +1,8 @@
-namespace KryptoMin.Application.Models
+using KryptoMin.Application.Models;
+
+namespace KryptoMin.Application.Dtos
 {
-    public class PurchaseResponseDto
+    public class TransactionResponseDto
     {
         public DateTime Date { get; set; }
         public string Method { get; set; }

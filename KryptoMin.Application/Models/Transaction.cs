@@ -1,8 +1,8 @@
 namespace KryptoMin.Application.Models
 {
-    public class Purchase
+    public class Transaction
     {
-        public Purchase(DateTime date, string method, Amount amount, string price, Amount fees, 
+        public Transaction(DateTime date, string method, Amount amount, string price, Amount fees, 
             string finalAmount, bool isSell, string transactionId)
         {
             Date = date;

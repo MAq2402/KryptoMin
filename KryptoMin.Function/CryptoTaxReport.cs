@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -6,10 +5,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using KryptoMin.Application.Contracts;
-using System.Collections.Generic;
-using KryptoMin.Application.Models;
 using System.IO;
 using Newtonsoft.Json;
+using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Function
 {

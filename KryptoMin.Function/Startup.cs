@@ -9,16 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace KryptoMin.Function
 {
-    public interface INbp
-    {
-
-    }
     public class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
-            // builder.Services.AddScoped<INbpHttpClient>(x => x.GetRequiredService<NbpHttpClient>());
             builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
             builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
         }

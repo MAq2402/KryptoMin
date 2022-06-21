@@ -6,6 +6,7 @@ namespace KryptoMin.Infra.Services
 {
     public class NbpExchangeRateProvider : IExchangeRateProvider
     {
+        private const string PLN = "PLN";
         private readonly INbpHttpClient _httpClient;
 
         public NbpExchangeRateProvider(INbpHttpClient client)
@@ -32,9 +33,9 @@ namespace KryptoMin.Infra.Services
 
         private async Task<ExchangeRate> Get(string currency, string date)
         {
-            if (currency == "PLN")
+            if (currency == PLN)
             {
-                return new ExchangeRate(1, string.Empty, date, "PLN");
+                return new ExchangeRate(1, string.Empty, date, PLN);
             }
             else
             {

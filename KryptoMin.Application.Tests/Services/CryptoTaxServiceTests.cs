@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using KryptoMin.Application.Contracts;
+using KryptoMin.Application.Dtos;
 using KryptoMin.Application.Models;
 using KryptoMin.Application.Services;
 using Moq;
@@ -31,9 +32,9 @@ namespace KryptoMin.Application.Tests.Services
             var taxReportRequest = new TaxReportRequestDto
             {
                 PreviousYearLoss = 999m,
-                Transactions = new List<PurchaseDto>
+                Transactions = new List<TransactionDto>
                 {
-                    new PurchaseDto
+                    new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-18"),
                         Method = "Credit Card",
@@ -45,7 +46,7 @@ namespace KryptoMin.Application.Tests.Services
                         IsSell = false,
                         TransactionId = "N01223522377463013376051811"
                     },
-                    new PurchaseDto
+                    new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-17"),
                         Method = "Credit Card",
@@ -57,7 +58,7 @@ namespace KryptoMin.Application.Tests.Services
                         IsSell = false,
                         TransactionId = "N01223522377463013376051812"
                     },
-                    new PurchaseDto
+                    new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-16"),
                         Method = "Credit Card",
@@ -74,9 +75,9 @@ namespace KryptoMin.Application.Tests.Services
             var actual = await sut.GenerateReport(taxReportRequest);
             var expected = new TaxReportDto
             {
-                Purchases = new List<PurchaseResponseDto>
+                Transactions = new List<TransactionResponseDto>
                 {
-                    new PurchaseResponseDto
+                    new TransactionResponseDto
                     {
                         Amount = new Amount("941.54 PLN"),
                         Costs = 960.37m,
@@ -91,7 +92,7 @@ namespace KryptoMin.Application.Tests.Services
                         Profits = 0.0m,
                         TransactionId = "N01223522377463013376051811"
                     },
-                    new PurchaseResponseDto
+                    new TransactionResponseDto
                     {
                         Amount = new Amount("500.54 EUR"),
                         Costs = 1311.9605m,
@@ -106,7 +107,7 @@ namespace KryptoMin.Application.Tests.Services
                         Profits = 0.0m,
                         TransactionId = "N01223522377463013376051812"
                     },
-                    new PurchaseResponseDto
+                    new TransactionResponseDto
                     {
                         Amount = new Amount("2000.99 USD"),
                         Costs = 391.638m,
@@ -146,18 +147,18 @@ namespace KryptoMin.Application.Tests.Services
 
         private static void CompareTransactions(TaxReportDto actual, TaxReportDto expected, int index)
         {
-            actual.Purchases.ToList()[index].Amount.Should().Be(expected.Purchases.ToList()[index].Amount);
-            actual.Purchases.ToList()[index].Costs.Should().Be(expected.Purchases.ToList()[index].Costs);
-            actual.Purchases.ToList()[index].Date.Should().Be(expected.Purchases.ToList()[index].Date);
-            actual.Purchases.ToList()[index].ExchangeRateAmount.Should().Be(expected.Purchases.ToList()[index].ExchangeRateAmount);
-            actual.Purchases.ToList()[index].ExchangeRateFees.Should().Be(expected.Purchases.ToList()[index].ExchangeRateFees);
-            actual.Purchases.ToList()[index].Fees.Should().Be(expected.Purchases.ToList()[index].Fees);
-            actual.Purchases.ToList()[index].FinalAmount.Should().Be(expected.Purchases.ToList()[index].FinalAmount);
-            actual.Purchases.ToList()[index].IsSell.Should().Be(expected.Purchases.ToList()[index].IsSell);
-            actual.Purchases.ToList()[index].Method.Should().Be(expected.Purchases.ToList()[index].Method);
-            actual.Purchases.ToList()[index].Price.Should().Be(expected.Purchases.ToList()[index].Price);
-            actual.Purchases.ToList()[index].Profits.Should().Be(expected.Purchases.ToList()[index].Profits);
-            actual.Purchases.ToList()[index].TransactionId.Should().Be(expected.Purchases.ToList()[index].TransactionId);
+            actual.Transactions.ToList()[index].Amount.Should().Be(expected.Transactions.ToList()[index].Amount);
+            actual.Transactions.ToList()[index].Costs.Should().Be(expected.Transactions.ToList()[index].Costs);
+            actual.Transactions.ToList()[index].Date.Should().Be(expected.Transactions.ToList()[index].Date);
+            actual.Transactions.ToList()[index].ExchangeRateAmount.Should().Be(expected.Transactions.ToList()[index].ExchangeRateAmount);
+            actual.Transactions.ToList()[index].ExchangeRateFees.Should().Be(expected.Transactions.ToList()[index].ExchangeRateFees);
+            actual.Transactions.ToList()[index].Fees.Should().Be(expected.Transactions.ToList()[index].Fees);
+            actual.Transactions.ToList()[index].FinalAmount.Should().Be(expected.Transactions.ToList()[index].FinalAmount);
+            actual.Transactions.ToList()[index].IsSell.Should().Be(expected.Transactions.ToList()[index].IsSell);
+            actual.Transactions.ToList()[index].Method.Should().Be(expected.Transactions.ToList()[index].Method);
+            actual.Transactions.ToList()[index].Price.Should().Be(expected.Transactions.ToList()[index].Price);
+            actual.Transactions.ToList()[index].Profits.Should().Be(expected.Transactions.ToList()[index].Profits);
+            actual.Transactions.ToList()[index].TransactionId.Should().Be(expected.Transactions.ToList()[index].TransactionId);
         }
     }
 }
