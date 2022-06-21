@@ -2,11 +2,11 @@ using Xunit;
 using KryptoMin.Infra.Services;
 using Moq;
 using System.Collections.Generic;
-using KryptoMin.Application.Models;
 using System.Threading.Tasks;
 using FluentAssertions;
 using KryptoMin.Infra.Models.Nbp;
 using KryptoMin.Infra.HttpClients;
+using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Infra.Tests;
 
@@ -18,7 +18,7 @@ public class NbpExchangeRateProviderTests
         var mockedNbpHttpClient = new Mock<INbpHttpClient>();
         var sut = new NbpExchangeRateProvider(mockedNbpHttpClient.Object);
 
-        var result = await sut.Get(new List<ExchangeRateRequest>());
+        var result = await sut.Get(new List<ExchangeRateRequestDto>());
 
         result.Should().BeEmpty();
     }
@@ -34,14 +34,14 @@ public class NbpExchangeRateProviderTests
             } 
         });
         var sut = new NbpExchangeRateProvider(mockedNbpHttpClient.Object);
-        var requests = new List<ExchangeRateRequest>()
+        var requests = new List<ExchangeRateRequestDto>()
         {
-            new ExchangeRateRequest("USD", "2022-10-01"),
-            new ExchangeRateRequest("PLN", "2022-15-01"),
-            new ExchangeRateRequest("PLN", "2022-10-01"),
-            new ExchangeRateRequest("PLN", "2022-10-01"),
-            new ExchangeRateRequest("USD", "2022-10-01"),
-            new ExchangeRateRequest("EUR", "2022-02-01"),
+            new ExchangeRateRequestDto("USD", "2022-10-01"),
+            new ExchangeRateRequestDto("PLN", "2022-15-01"),
+            new ExchangeRateRequestDto("PLN", "2022-10-01"),
+            new ExchangeRateRequestDto("PLN", "2022-10-01"),
+            new ExchangeRateRequestDto("USD", "2022-10-01"),
+            new ExchangeRateRequestDto("EUR", "2022-02-01"),
         };
 
         var result = await sut.Get(requests);

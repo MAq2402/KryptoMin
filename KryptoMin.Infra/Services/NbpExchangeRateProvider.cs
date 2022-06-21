@@ -1,4 +1,5 @@
 using KryptoMin.Application.Contracts;
+using KryptoMin.Application.Dtos;
 using KryptoMin.Application.Models;
 using KryptoMin.Infra.HttpClients;
 
@@ -14,7 +15,7 @@ namespace KryptoMin.Infra.Services
             _httpClient = client;
         }
 
-        public async Task<IEnumerable<ExchangeRate>> Get(IEnumerable<ExchangeRateRequest> requests)
+        public async Task<IEnumerable<ExchangeRate>> Get(IEnumerable<ExchangeRateRequestDto> requests)
         {
             var result = new List<ExchangeRate>();
             foreach (var reqeust in requests)

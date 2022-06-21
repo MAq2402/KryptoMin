@@ -1,5 +1,3 @@
-using KryptoMin.Application.Dtos;
-
 namespace KryptoMin.Application.Dtos
 {
     public class TaxReportRequestDto

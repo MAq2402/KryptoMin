@@ -1,8 +1,8 @@
-namespace KryptoMin.Application.Models
+namespace KryptoMin.Application.Dtos
 {
-    public class ExchangeRateRequest
+    public class ExchangeRateRequestDto
     {
-        public ExchangeRateRequest(string currency, string date)
+        public ExchangeRateRequestDto(string currency, string date)
         {
             Date = date;
             Currency = currency;

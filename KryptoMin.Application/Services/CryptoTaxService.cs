@@ -19,8 +19,8 @@ namespace KryptoMin.Application.Services
                 new Transaction(x.Date, x.Method, new Amount(x.Amount), x.Price, new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
             ).ToList();
 
-            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequest(x.Amount.Currency, x.FormattedDayBefore));
-            var requestsForFees = transactions.Select(x => new ExchangeRateRequest(x.Fees.Currency, x.FormattedDayBefore));
+            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedDayBefore));
+            var requestsForFees = transactions.Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedDayBefore));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
             var balance = 0.0m;
