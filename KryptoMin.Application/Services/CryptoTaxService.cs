@@ -6,6 +6,8 @@ namespace KryptoMin.Application.Services
 {
     public class CryptoTaxService : ICryptoTaxService
     {
+        private const decimal TaxRate = 0.19m;
+        private const int DecimalPlaces = 2;
         private readonly IExchangeRateProvider _exchangeRateProvider;
 
         public CryptoTaxService(IExchangeRateProvider exchangeRateProvider)
@@ -27,29 +29,19 @@ namespace KryptoMin.Application.Services
             var transactionsResponse = new List<TransactionResponseDto>();
             foreach (var transaction in transactions)
             {
-                if (transaction.IsSell)
-                {
-                    var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedDayBefore);
-                    var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedDayBefore);
-                    var costs = transaction.Fees.Value * exchangeRateForFees.Value;
-                    var profits = transaction.Amount.Value * exchangeRateForAmount.Value;
-                    balance -= costs;
-                    balance += profits;
-                    transactionsResponse.Add(MapToResponseDto(transaction, exchangeRateForAmount, exchangeRateForFees, costs, profits));
-                }
-                else
-                {
-                    var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedDayBefore);
-                    var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedDayBefore);
-                    var costs = transaction.Amount.Value * exchangeRateForAmount.Value + transaction.Fees.Value * exchangeRateForFees.Value;
-                    balance -= costs;
-                    transactionsResponse.Add(MapToResponseDto(transaction, exchangeRateForAmount, exchangeRateForFees, costs));
-                }
+                var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedDayBefore);
+                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedDayBefore);
+
+                transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
+                balance -= transaction.CalculateCosts();
+                balance += transaction.CalculateProfits();
+
+                transactionsResponse.Add(MapToResponseDto(transaction, exchangeRateForAmount, exchangeRateForFees));
             }
     
-            balance = Math.Round(balance, 2);
-            var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, 2);
-            var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * 0.19m, 2) : 0;
+            balance = Math.Round(balance, DecimalPlaces);
+            var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, DecimalPlaces);
+            var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
 
             return new TaxReportDto
             {
@@ -66,13 +58,13 @@ namespace KryptoMin.Application.Services
             return exchangeRates.First(x => x.Currency == currency && x.Date == date);
         }
 
-        private TransactionResponseDto MapToResponseDto(Transaction transaction, ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees, decimal costs, decimal profits = 0m)
+        private TransactionResponseDto MapToResponseDto(Transaction transaction, ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
         {
             return new TransactionResponseDto
             {
                 Amount = transaction.Amount,
-                Costs = costs,
-                Profits = profits,
+                Costs = transaction.Costs,
+                Profits = transaction.Profits,
                 Date = transaction.Date,
                 ExchangeRateAmount = exchangeRateForAmount,
                 ExchangeRateFees = exchangeRateForFees,

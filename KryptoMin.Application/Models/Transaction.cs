@@ -25,5 +25,28 @@ namespace KryptoMin.Application.Models
         public string FinalAmount { get; }
         public bool IsSell { get; set; }
         public string TransactionId { get; }
+        public ExchangeRate ExchangeRateForAmount { get; private set; }
+        public ExchangeRate ExchangeRateForFees { get; private set; }
+        public decimal Profits { get; private set; }
+        public decimal Costs { get; private set; }
+
+        public void SetExchangeRates(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
+        {
+            ExchangeRateForAmount = exchangeRateForAmount;
+            ExchangeRateForFees = exchangeRateForFees;
+        }
+
+        public decimal CalculateProfits()
+        {
+            Profits = IsSell ? Amount.Value * ExchangeRateForAmount.Value : 0m; 
+            return Profits;
+        }
+
+        public decimal CalculateCosts()
+        {
+            Costs = IsSell ? Fees.Value * ExchangeRateForFees.Value : 
+                Amount.Value * ExchangeRateForAmount.Value + Fees.Value * ExchangeRateForFees.Value;
+            return Costs;
+        }
     }
 }
