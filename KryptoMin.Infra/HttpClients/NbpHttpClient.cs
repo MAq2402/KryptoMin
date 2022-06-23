@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace KryptoMin.Infra.HttpClients
 {
-    public class NbpHttpClient
+    public class NbpHttpClient : INbpHttpClient
     {
         private readonly HttpClient _httpClient;
 
