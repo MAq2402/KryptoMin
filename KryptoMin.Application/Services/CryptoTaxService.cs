@@ -21,16 +21,16 @@ namespace KryptoMin.Application.Services
                 new Transaction(x.Date, x.Method, new Amount(x.Amount), x.Price, new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
             ).ToList();
 
-            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedDayBefore));
-            var requestsForFees = transactions.Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedDayBefore));
+            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedPreviousWorkingDay));
+            var requestsForFees = transactions.Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
             var balance = 0.0m;
             var transactionsResponse = new List<TransactionResponseDto>();
             foreach (var transaction in transactions)
             {
-                var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedDayBefore);
-                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedDayBefore);
+                var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedPreviousWorkingDay);
+                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedPreviousWorkingDay);
 
                 transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
                 balance -= transaction.CalculateCosts();
