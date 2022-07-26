@@ -23,8 +23,8 @@ namespace KryptoMin.Application.Tests.Services
                 new ExchangeRate(1, "1", "2022-05-17", "PLN"),
                 new ExchangeRate(2.53m, "2", "2022-05-16", "EUR"),
                 new ExchangeRate(4.21m, "3", "2022-05-16", "USD"),
-                new ExchangeRate(6.97m, "4", "2022-05-15", "USD"),
-                new ExchangeRate(7.80m, "5", "2022-05-15", "EUR"),
+                new ExchangeRate(6.97m, "4", "2022-05-13", "USD"),
+                new ExchangeRate(7.80m, "5", "2022-05-13", "EUR"),
             };
             currencyProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
             var sut = new CryptoTaxService(currencyProvider.Object);
@@ -112,8 +112,8 @@ namespace KryptoMin.Application.Tests.Services
                         Amount = new Amount("2000.99 USD"),
                         Costs = 391.638m,
                         Date = DateTime.Parse("2022-05-16"),
-                        ExchangeRateAmount = new ExchangeRate(6.97m, "4", "2022-05-15", "USD"),
-                        ExchangeRateFees = new ExchangeRate(7.80m, "5", "2022-05-15", "EUR"),
+                        ExchangeRateAmount = new ExchangeRate(6.97m, "4", "2022-05-13", "USD"),
+                        ExchangeRateFees = new ExchangeRate(7.80m, "5", "2022-05-13", "EUR"),
                         Fees = new Amount("50.21 EUR"),
                         FinalAmount = "200 USDT",
                         IsSell = true,
@@ -132,8 +132,8 @@ namespace KryptoMin.Application.Tests.Services
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == "2022-05-17"))));
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-16"))));
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-16"))));
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-15"))));
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-15"))));
+            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-13"))));
+            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-13"))));
 
             CompareTransactions(actual, expected, 0);
             CompareTransactions(actual, expected, 1);

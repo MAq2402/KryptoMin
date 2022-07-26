@@ -38,4 +38,21 @@ public class TransactionTests
 
         transaction.CalculateProfits().Should().Be(expectedProfits);
     }
+
+    [Theory]
+    [InlineData(2022, 7, 18, "2022-07-15")]
+    [InlineData(2022, 7, 19, "2022-07-18")]
+    [InlineData(2022, 7, 20, "2022-07-19")]
+    [InlineData(2022, 7, 21, "2022-07-20")]
+    [InlineData(2022, 7, 22, "2022-07-21")]
+    [InlineData(2022, 7, 23, "2022-07-22")]
+    [InlineData(2022, 7, 24, "2022-07-22")]
+    public void Transaction_FormattedPreviousWorkingDay_ShouldWork(int year, int month, int day, string result)
+    {
+        var transaction = new Transaction(new DateTime(year, month, day),
+            "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN",
+            new Amount("28.31 EUR"), "200 USDT", false, "01223522377463013376051811");
+
+        transaction.FormattedPreviousWorkingDay.Should().Be(result);
+    }
 }

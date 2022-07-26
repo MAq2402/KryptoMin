@@ -16,8 +16,8 @@ namespace KryptoMin.Application.Models
         }
 
         public DateTime Date { get; }
-        public DateTime DayBefore => Date.AddDays(-1);
-        public string FormattedDayBefore => DayBefore.ToString("yyyy-MM-dd");
+        public DateTime PreviousWorkingDay => Date.DayOfWeek == DayOfWeek.Monday ? Date.AddDays(-3) : Date.DayOfWeek == DayOfWeek.Sunday ? Date.AddDays(-2) : Date.AddDays(-1);
+        public string FormattedPreviousWorkingDay => PreviousWorkingDay.ToString("yyyy-MM-dd");
         public string Method { get; }
         public Amount Amount { get; }
         public string Price { get; }
