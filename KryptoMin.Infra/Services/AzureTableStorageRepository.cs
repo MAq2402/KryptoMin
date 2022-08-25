@@ -10,7 +10,7 @@ namespace KryptoMin.Infra.Services
     {
         public async Task Save(TaxReportDto report)
         {
-            var storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=kryptomindev;AccountKey=ibubeZAUH7zjoFLB/doTB+6AacvNXqW7FmsCugho24BXD9OgHJR8IbzxOT3bFy2Fv+nCU2IbbDFQ+AStIlSK7g==;EndpointSuffix=core.windows.net";
+            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
             var tableName = "Reports";
 
             var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
