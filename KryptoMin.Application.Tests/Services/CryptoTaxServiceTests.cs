@@ -27,7 +27,7 @@ namespace KryptoMin.Application.Tests.Services
                 new ExchangeRate(7.80m, "5", "2022-05-13", "EUR"),
             };
             currencyProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
-            var sut = new CryptoTaxService(currencyProvider.Object);
+            var sut = new CryptoTaxService(currencyProvider.Object, null);
 
             var taxReportRequest = new TaxReportRequestDto
             {
