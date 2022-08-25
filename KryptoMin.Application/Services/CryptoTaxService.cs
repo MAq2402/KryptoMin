@@ -44,8 +44,6 @@ namespace KryptoMin.Application.Services
             balance = Math.Round(balance, DecimalPlaces);
             var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, DecimalPlaces);
             var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
-
-            //azure key vault
   
             var report = new TaxReportDto
             {
