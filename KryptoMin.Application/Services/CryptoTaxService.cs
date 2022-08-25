@@ -9,10 +9,12 @@ namespace KryptoMin.Application.Services
         private const decimal TaxRate = 0.19m;
         private const int DecimalPlaces = 2;
         private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IReportRepository _reportRepository;
 
-        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider)
+        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IReportRepository reportRepository)
         {
             _exchangeRateProvider = exchangeRateProvider;
+            _reportRepository = reportRepository;
         }
 
         public async Task<TaxReportDto> GenerateReport(TaxReportRequestDto request)
@@ -42,8 +44,8 @@ namespace KryptoMin.Application.Services
             balance = Math.Round(balance, DecimalPlaces);
             var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, DecimalPlaces);
             var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
-
-            return new TaxReportDto
+  
+            var report = new TaxReportDto
             {
                 Tax = tax,
                 Transactions= transactionsResponse,
@@ -51,6 +53,9 @@ namespace KryptoMin.Application.Services
                 BalanceWithPreviousYearLoss = balanceWithPreviousYearLoss,
                 PreviousYearLoss = request.PreviousYearLoss
             };
+
+            await _reportRepository.Save(report);
+            return report;
         }
 
         private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)

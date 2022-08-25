@@ -16,6 +16,7 @@ namespace KryptoMin.Function
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
             builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
             builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
+            builder.Services.AddScoped<IReportRepository, AzureTableStorageRepository>();
         }
     }
 }
