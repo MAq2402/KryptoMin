@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace KryptoMin.Application.Models
+namespace KryptoMin.Domain.ValueObjects
 {
     public class Amount : ValueObject
     {
@@ -19,6 +19,11 @@ namespace KryptoMin.Application.Models
         {
             yield return Value;
             yield return Currency;
+        }
+
+        public override string ToString()
+        {
+            return $"{Value} {Currency}";
         }
     }
 }

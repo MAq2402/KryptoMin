@@ -4,6 +4,6 @@ namespace KryptoMin.Application.Contracts
 {
     public interface ICryptoTaxService
     {
-        Task<TaxReportDto> GenerateReport(TaxReportRequestDto request);
+        Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request);
     }
 }

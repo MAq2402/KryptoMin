@@ -1,6 +1,6 @@
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.ValueObjects;
 using KryptoMin.Infra.HttpClients;
 
 namespace KryptoMin.Infra.Services

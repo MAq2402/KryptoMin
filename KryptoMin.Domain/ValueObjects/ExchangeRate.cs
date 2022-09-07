@@ -1,4 +1,4 @@
-namespace KryptoMin.Application.Models
+namespace KryptoMin.Domain.ValueObjects
 {
     public class ExchangeRate : ValueObject
     {
@@ -20,6 +20,17 @@ namespace KryptoMin.Application.Models
             yield return Value;
             yield return Date;
             yield return Currency;
+        }
+
+        public override string ToString()
+        {
+            return $"{Value},{Number},{Date},{Currency}";
+        }
+
+        public static explicit operator ExchangeRate(string value)
+        {
+            var splitted = value.Split(",");
+            return new ExchangeRate(Convert.ToDecimal(splitted[0]), splitted[1], splitted[2], splitted[3]);
         }
     }
 }

@@ -1,6 +1,9 @@
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.Entities;
+using KryptoMin.Domain.Enums;
+using KryptoMin.Domain.Repositories;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Services
 {
@@ -9,18 +12,20 @@ namespace KryptoMin.Application.Services
         private const decimal TaxRate = 0.19m;
         private const int DecimalPlaces = 2;
         private readonly IExchangeRateProvider _exchangeRateProvider;
-        private readonly IReportRepository _reportRepository;
+        private readonly IRepository<TaxReport> _reportRepository;
 
-        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IReportRepository reportRepository)
+        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IRepository<TaxReport> reportRepository)
         {
             _exchangeRateProvider = exchangeRateProvider;
             _reportRepository = reportRepository;
         }
 
-        public async Task<TaxReportDto> GenerateReport(TaxReportRequestDto request)
+        public async Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request)
         {
+            var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
-                new Transaction(x.Date, x.Method, new Amount(x.Amount), x.Price, new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
+                new Transaction(reportId, Guid.NewGuid(), x.Date, x.Method, new Amount(x.Amount), 
+                x.Price, new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
             ).ToList();
 
             var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedPreviousWorkingDay));
@@ -45,17 +50,15 @@ namespace KryptoMin.Application.Services
             var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, DecimalPlaces);
             var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
   
-            var report = new TaxReportDto
-            {
-                Tax = tax,
-                Transactions= transactionsResponse,
-                Balance = balance,
-                BalanceWithPreviousYearLoss = balanceWithPreviousYearLoss,
-                PreviousYearLoss = request.PreviousYearLoss
-            };
+            var report = new TaxReport(reportId, Guid.NewGuid(), 
+                transactions, balance, balanceWithPreviousYearLoss, tax, request.PreviousYearLoss, null, TaxReportStatus.Created);
 
-            await _reportRepository.Save(report);
-            return report;
+            await _reportRepository.Add(report);
+            return new TaxReportResponseDto
+            {
+                PartitionKey = report.PartitionKey.ToString(),
+                RowKey = report.RowKey.ToString()
+            };
         }
 
         private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)
