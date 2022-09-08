@@ -2,8 +2,8 @@ using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Application.Contracts
 {
-    public interface IReportRepository
+    public interface IReportService
     {
-        Task Save(TaxReportDto report);
+        Task Send(SendReportRequestDto request);
     }
 }

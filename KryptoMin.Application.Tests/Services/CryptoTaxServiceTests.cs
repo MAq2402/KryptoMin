@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
-using KryptoMin.Application.Models;
 using KryptoMin.Application.Services;
+using KryptoMin.Domain.Entities;
+using KryptoMin.Domain.Repositories;
+using KryptoMin.Domain.ValueObjects;
 using Moq;
 using Xunit;
 
@@ -18,7 +20,7 @@ namespace KryptoMin.Application.Tests.Services
         public async Task GenerateReport_ShouldWork()
         {
             var currencyProvider = new Mock<IExchangeRateProvider>();
-            var reportRepository = new Mock<IReportRepository>();
+            var reportRepository = new Mock<IRepository<TaxReport>>();
             var exchangeRates = new List<ExchangeRate>()
             {
                 new ExchangeRate(1, "1", "2022-05-17", "PLN"),
@@ -74,7 +76,7 @@ namespace KryptoMin.Application.Tests.Services
                 }
             };
             var actual = await sut.GenerateReport(taxReportRequest);
-            var expected = new TaxReportDto
+            var expected = new TaxReportResponseDto
             {
                 Transactions = new List<TransactionResponseDto>
                 {
@@ -135,7 +137,7 @@ namespace KryptoMin.Application.Tests.Services
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-16"))), Times.Once);
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-13"))), Times.Once);
             currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-13"))), Times.Once);
-            reportRepository.Verify(x => x.Save(It.IsAny<TaxReportDto>()), Times.Once);
+            reportRepository.Verify(x => x.Save(It.IsAny<TaxReportResponseDto>()), Times.Once);
 
             CompareTransactions(actual, expected, 0);
             CompareTransactions(actual, expected, 1);
@@ -147,7 +149,7 @@ namespace KryptoMin.Application.Tests.Services
             actual.Tax.Should().Be(expected.Tax);
         }
 
-        private static void CompareTransactions(TaxReportDto actual, TaxReportDto expected, int index)
+        private static void CompareTransactions(TaxReportResponseDto actual, TaxReportResponseDto expected, int index)
         {
             actual.Transactions.ToList()[index].Amount.Should().Be(expected.Transactions.ToList()[index].Amount);
             actual.Transactions.ToList()[index].Costs.Should().Be(expected.Transactions.ToList()[index].Costs);

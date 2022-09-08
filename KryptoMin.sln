@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Infra.Tests", "Kr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Application.Tests", "KryptoMin.Application.Tests\KryptoMin.Application.Tests.csproj", "{C26EE521-30C1-4937-BAA7-A7AA689E6387}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KryptoMin.Domain", "KryptoMin.Domain\KryptoMin.Domain.csproj", "{015D20CB-BEEB-4BDE-9F44-A087185E8FE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,5 +54,9 @@ Global
 		{C26EE521-30C1-4937-BAA7-A7AA689E6387}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C26EE521-30C1-4937-BAA7-A7AA689E6387}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C26EE521-30C1-4937-BAA7-A7AA689E6387}.Release|Any CPU.Build.0 = Release|Any CPU
+		{015D20CB-BEEB-4BDE-9F44-A087185E8FE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{015D20CB-BEEB-4BDE-9F44-A087185E8FE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{015D20CB-BEEB-4BDE-9F44-A087185E8FE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{015D20CB-BEEB-4BDE-9F44-A087185E8FE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

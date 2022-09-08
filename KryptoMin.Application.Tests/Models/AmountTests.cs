@@ -1,6 +1,6 @@
 using System;
 using FluentAssertions;
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.ValueObjects;
 using Xunit;
 
 namespace KryptoMin.Application.Tests.Models;

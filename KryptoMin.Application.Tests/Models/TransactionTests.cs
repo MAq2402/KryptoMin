@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using FluentAssertions;
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.Entities;
+using KryptoMin.Domain.ValueObjects;
 using Xunit;
 
 namespace KryptoMin.Application.Tests.Models;

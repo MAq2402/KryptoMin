@@ -1,5 +1,7 @@
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Services;
+using KryptoMin.Domain.Entities;
+using KryptoMin.Domain.Repositories;
 using KryptoMin.Infra.HttpClients;
 using KryptoMin.Infra.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -16,7 +18,9 @@ namespace KryptoMin.Function
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
             builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
             builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
-            builder.Services.AddScoped<IReportRepository, AzureTableStorageRepository>();
+            builder.Services.AddScoped<IRepository<TaxReport>, AzureTableStorageRepository>();
+            builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
+            builder.Services.AddScoped<IReportService, ReportService>();
         }
     }
 }

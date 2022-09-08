@@ -1,4 +1,4 @@
-namespace KryptoMin.Application.Models
+namespace KryptoMin.Domain.ValueObjects
 {
     public abstract class ValueObject
     {

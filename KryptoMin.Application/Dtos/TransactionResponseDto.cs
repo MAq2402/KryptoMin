@@ -1,4 +1,4 @@
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Dtos
 {

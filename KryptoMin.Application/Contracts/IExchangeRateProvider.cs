@@ -1,5 +1,5 @@
 using KryptoMin.Application.Dtos;
-using KryptoMin.Application.Models;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Contracts
 {
