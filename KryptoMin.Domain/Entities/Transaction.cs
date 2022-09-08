@@ -6,10 +6,8 @@ namespace KryptoMin.Domain.Entities
     {
         public Transaction(Guid partitionKey, Guid rowKey, DateTime date, 
             string method, Amount amount, string price, Amount fees, 
-            string finalAmount, bool isSell, string transactionId)
+            string finalAmount, bool isSell, string transactionId) : base(partitionKey, rowKey)
         {
-            PartitionKey = partitionKey;
-            RowKey = rowKey;
             Date = date;
             Method = method;
             Amount = amount;
@@ -25,10 +23,8 @@ namespace KryptoMin.Domain.Entities
             string method, Amount amount, string price, Amount fees, 
             string finalAmount, bool isSell, string transactionId, 
             ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees, 
-            decimal profits, decimal costs)
+            decimal profits, decimal costs) : base(partitionKey, rowKey)
         {
-            PartitionKey = partitionKey;
-            RowKey = rowKey;
             Date = date;
             Method = method;
             Amount = amount;
@@ -54,8 +50,8 @@ namespace KryptoMin.Domain.Entities
         public string FinalAmount { get; }
         public bool IsSell { get; set; }
         public string TransactionId { get; }
-        public ExchangeRate ExchangeRateForAmount { get; private set; }
-        public ExchangeRate ExchangeRateForFees { get; private set; }
+        public ExchangeRate? ExchangeRateForAmount { get; private set; }
+        public ExchangeRate? ExchangeRateForFees { get; private set; }
         public decimal Profits { get; private set; }
         public decimal Costs { get; private set; }
 
@@ -67,12 +63,20 @@ namespace KryptoMin.Domain.Entities
 
         public decimal CalculateProfits()
         {
+            if(ExchangeRateForAmount is null) 
+            {
+                throw new InvalidOperationException("Before calculating profits exchange rates should be loaded.");
+            }
             Profits = IsSell ? Amount.Value * ExchangeRateForAmount.Value : 0m; 
             return Profits;
         }
 
         public decimal CalculateCosts()
         {
+            if(ExchangeRateForAmount is null || ExchangeRateForFees is null) 
+            {
+                throw new InvalidOperationException("Before calculating costs exchange rates should be loaded.");
+            }
             Costs = IsSell ? Fees.Value * ExchangeRateForFees.Value : 
                 Amount.Value * ExchangeRateForAmount.Value + Fees.Value * ExchangeRateForFees.Value;
             return Costs;

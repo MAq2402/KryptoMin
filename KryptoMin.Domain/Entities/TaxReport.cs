@@ -14,10 +14,8 @@ namespace KryptoMin.Domain.Entities
             decimal tax, 
             decimal previousYearLoss, 
             string ownerEmail, 
-            TaxReportStatus status)
+            TaxReportStatus status) : base(partitionKey, rowKey)
         {
-            PartitionKey = partitionKey;
-            RowKey = rowKey;
             _transactions = transactions;
             Balance = balance;
             BalanceWithPreviousYearLoss = balanceWithPreviousYearLoss;

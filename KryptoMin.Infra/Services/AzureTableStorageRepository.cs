@@ -23,13 +23,14 @@ namespace KryptoMin.Infra.Services
 
         public async Task<TaxReport> Get(Guid partitionKey, Guid rowKey)
         {
-            var transactionQuery = new TableQuery<TransactionTableEntity>().Where(
-                            TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey.ToString()));
+            var transactionsQuery = new TableQuery<TransactionTableEntity>().Where(
+                            TableQuery.GenerateFilterCondition(nameof(TransactionTableEntity.PartitionKey), QueryComparisons.Equal, partitionKey.ToString()));
+            var transactions = _transactions.ExecuteQuery<TransactionTableEntity>(transactionsQuery).Select(x => x.ToDomain());
+        
+            var retrieveReport = TableOperation.Retrieve<TaxReportTableEntity>(partitionKey.ToString(), rowKey.ToString());
+            var taxReport = await _reports.ExecuteAsync(retrieveReport);
 
-            var transactions = _transactions.ExecuteQuery<TransactionTableEntity>(transactionQuery).Select(x => x.ToDomain());
-            var retrieve = TableOperation.Retrieve<TaxReportTableEntity>(partitionKey.ToString(), rowKey.ToString());
-            var result = await _reports.ExecuteAsync(retrieve);
-            return (result.Result as TaxReportTableEntity).ToDomain(transactions.ToList());
+            return (taxReport.Result as TaxReportTableEntity).ToDomain(transactions.ToList());
         }
 
         public async Task Add(TaxReport report)

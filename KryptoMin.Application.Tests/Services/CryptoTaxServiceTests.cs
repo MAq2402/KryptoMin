@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
-using KryptoMin.Application.Models;
 using KryptoMin.Application.Services;
+using KryptoMin.Domain.Entities;
+using KryptoMin.Domain.Repositories;
+using KryptoMin.Domain.ValueObjects;
 using Moq;
 using Xunit;
 
@@ -18,7 +20,7 @@ namespace KryptoMin.Application.Tests.Services
         public async Task GenerateReport_ShouldWork()
         {
             var currencyProvider = new Mock<IExchangeRateProvider>();
-            var reportRepository = new Mock<IReportRepository>();
+            var reportRepository = new Mock<IRepository<TaxReport>>();
             var exchangeRates = new List<ExchangeRate>()
             {
                 new ExchangeRate(1, "1", "2022-05-17", "PLN"),

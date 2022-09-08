@@ -20,6 +20,7 @@ namespace KryptoMin.Function
             builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
             builder.Services.AddScoped<IRepository<TaxReport>, AzureTableStorageRepository>();
             builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
+            builder.Services.AddScoped<IReportService, ReportService>();
         }
     }
 }

@@ -8,7 +8,6 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
     {
         public TransactionTableEntity()
         {
-
         }
         
         public TransactionTableEntity(Transaction transaction)
