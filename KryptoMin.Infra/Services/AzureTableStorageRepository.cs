@@ -1,3 +1,4 @@
+using KryptoMin.Application.Settings;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.Enums;
 using KryptoMin.Domain.Repositories;
@@ -11,11 +12,9 @@ namespace KryptoMin.Infra.Services
         private readonly CloudTable _reports;
         private readonly CloudTable _transactions;
 
-        public AzureTableStorageRepository()
+        public AzureTableStorageRepository(DbSettings dbSettings)
         {
-            var storageConnectionString = Environment.GetEnvironmentVariable("StorageConnectionString");
-
-            var storageAccount = CloudStorageAccount.Parse(storageConnectionString);
+            var storageAccount = CloudStorageAccount.Parse(dbSettings.ConnectionString);
 
             _reports = storageAccount.CreateCloudTableClient(new TableClientConfiguration()).GetTableReference("Reports");
             _transactions = storageAccount.CreateCloudTableClient(new TableClientConfiguration()).GetTableReference("Transactions");
