@@ -26,7 +26,8 @@ namespace KryptoMin.Function
             builder.Services.AddScoped<IReportService, ReportService>();
             builder.Services.AddScoped<IPdfReportGenerator, PdfReportGenerator>();
 
-            var emailSettings = new EmailSettings(Environment.GetEnvironmentVariable("SendGridApiKey"));
+            var emailSettings = new EmailSettings(Environment.GetEnvironmentVariable("SendGridApiKey"), 
+                Environment.GetEnvironmentVariable("EmailAddress"), Environment.GetEnvironmentVariable("EmailName"));
             builder.Services.AddSingleton<EmailSettings>(emailSettings);
 
             var dbSettings = new DbSettings(Environment.GetEnvironmentVariable("StorageConnectionString"));

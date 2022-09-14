@@ -25,10 +25,10 @@ namespace KryptoMin.Infra.Services
             var client = new SendGridClient(_emailSettings.ApiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("maq0297@gmail.com", "Michal Miciak"),
-                Subject = $"KryptoMin Report",
-                PlainTextContent = "",
-                HtmlContent = "",
+                From = new EmailAddress(_emailSettings.Address, _emailSettings.Name),
+                Subject = "KryptoMin Report",
+                PlainTextContent = "KryptoMin Report",
+                HtmlContent = "KryptoMin Report",
             };
             msg.AddAttachment("KryptoMin_Raport.pdf", pdf);
             msg.AddTo(new EmailAddress(email));
