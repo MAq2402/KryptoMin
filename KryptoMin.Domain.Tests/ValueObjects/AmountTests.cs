@@ -3,7 +3,7 @@ using FluentAssertions;
 using KryptoMin.Domain.ValueObjects;
 using Xunit;
 
-namespace KryptoMin.Application.Tests.Models;
+namespace KryptoMin.Domain.Tests.ValueObjects;
 
 public class AmountTests
 {
@@ -53,5 +53,16 @@ public class AmountTests
         var amount2 = new Amount(value2);
 
         (amount1 == amount2).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("825.15 PLN")]
+    [InlineData("100.15 USD")]
+    [InlineData("0.15 EUR")]
+    public void ToString_ShouldWork(string value)
+    {
+        var amount = new Amount(value);
+
+        amount.ToString().Should().Be(value);
     }
 }

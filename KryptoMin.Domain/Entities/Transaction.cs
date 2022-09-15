@@ -1,4 +1,4 @@
-using KryptoMin.Domain.ValueObjects;
+ using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Domain.Entities
 {
@@ -63,7 +63,7 @@ namespace KryptoMin.Domain.Entities
 
         public decimal CalculateProfits()
         {
-            if(ExchangeRateForAmount is null) 
+            if (ExchangeRateForAmount is null) 
             {
                 throw new InvalidOperationException("Before calculating profits exchange rates should be loaded.");
             }
@@ -73,7 +73,7 @@ namespace KryptoMin.Domain.Entities
 
         public decimal CalculateCosts()
         {
-            if(ExchangeRateForAmount is null || ExchangeRateForFees is null) 
+            if (ExchangeRateForAmount is null || ExchangeRateForFees is null) 
             {
                 throw new InvalidOperationException("Before calculating costs exchange rates should be loaded.");
             }
