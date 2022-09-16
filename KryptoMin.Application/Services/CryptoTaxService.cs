@@ -3,6 +3,7 @@ using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.Enums;
 using KryptoMin.Domain.Repositories;
+using KryptoMin.Domain.Services;
 using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Services
@@ -13,11 +14,13 @@ namespace KryptoMin.Application.Services
         private const int DecimalPlaces = 2;
         private readonly IExchangeRateProvider _exchangeRateProvider;
         private readonly IRepository<TaxReport> _reportRepository;
+        private readonly ITaxReportCalculator _taxReportCalculator;
 
-        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IRepository<TaxReport> reportRepository)
+        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IRepository<TaxReport> reportRepository, ITaxReportCalculator taxReportCalculator)
         {
             _exchangeRateProvider = exchangeRateProvider;
             _reportRepository = reportRepository;
+            _taxReportCalculator = taxReportCalculator;
         }
 
         public async Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request)
@@ -32,56 +35,13 @@ namespace KryptoMin.Application.Services
             var requestsForFees = transactions.Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
-            var balance = 0.0m;
-            var transactionsResponse = new List<TransactionResponseDto>();
-            foreach (var transaction in transactions)
-            {
-                var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedPreviousWorkingDay);
-                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedPreviousWorkingDay);
-
-                transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
-                balance -= transaction.CalculateCosts();
-                balance += transaction.CalculateProfits();
-
-                transactionsResponse.Add(MapToResponseDto(transaction, exchangeRateForAmount, exchangeRateForFees));
-            }
-    
-            balance = Math.Round(balance, DecimalPlaces);
-            var balanceWithPreviousYearLoss = Math.Round(balance - request.PreviousYearLoss, DecimalPlaces);
-            var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
-  
-            var report = new TaxReport(reportId, Guid.NewGuid(), 
-                transactions, balance, balanceWithPreviousYearLoss, tax, request.PreviousYearLoss, null, TaxReportStatus.Created);
+            var report = _taxReportCalculator.Calculate(transactions, exchangeRates, reportId, request.PreviousYearLoss);
 
             await _reportRepository.Add(report);
             return new TaxReportResponseDto
             {
                 PartitionKey = report.PartitionKey.ToString(),
                 RowKey = report.RowKey.ToString()
-            };
-        }
-
-        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)
-        {
-            return exchangeRates.First(x => x.Currency == currency && x.Date == date);
-        }
-
-        private TransactionResponseDto MapToResponseDto(Transaction transaction, ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
-        {
-            return new TransactionResponseDto
-            {
-                Amount = transaction.Amount,
-                Costs = transaction.Costs,
-                Profits = transaction.Profits,
-                Date = transaction.Date,
-                ExchangeRateAmount = exchangeRateForAmount,
-                ExchangeRateFees = exchangeRateForFees,
-                Fees = transaction.Fees,
-                FinalAmount = transaction.FinalAmount,
-                Method = transaction.Method,
-                Price = transaction.Price,
-                IsSell = transaction.IsSell,
-                TransactionId = transaction.TransactionId
             };
         }
     }
