@@ -26,9 +26,8 @@ namespace KryptoMin.Domain.Services
             var balanceWithPreviousYearLoss = Math.Round(balance - previousYearLoss, DecimalPlaces);
             var tax = balanceWithPreviousYearLoss > 0 ? Math.Round(balanceWithPreviousYearLoss * TaxRate, DecimalPlaces) : 0;
   
-            // one constructor, set null default value or sth like this 
             return new TaxReport(reportPartitionId, Guid.NewGuid(), 
-                transactions, balance, balanceWithPreviousYearLoss, tax, previousYearLoss, null, TaxReportStatus.Created);
+                transactions, balance, balanceWithPreviousYearLoss, tax, previousYearLoss);
         }
 
         private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)

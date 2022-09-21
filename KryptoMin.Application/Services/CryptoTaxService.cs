@@ -1,7 +1,6 @@
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.Entities;
-using KryptoMin.Domain.Enums;
 using KryptoMin.Domain.Repositories;
 using KryptoMin.Domain.Services;
 using KryptoMin.Domain.ValueObjects;
