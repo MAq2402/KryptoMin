@@ -30,12 +30,6 @@ stages:
       vmImage: $(vmImageName)
 
     steps:
-    - task: DotNetCoreCLI@2
-      displayName: "Unit Tests"
-      inputs:
-        command: 'test'
-        projects: '**/*Tests.csproj'
-    
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk'
       inputs:
@@ -50,6 +44,12 @@ stages:
         projects: |
           $(workingDirectory)/*.csproj
         arguments: --output $(System.DefaultWorkingDirectory)/publish_output --configuration Release
+
+    - task: DotNetCoreCLI@2
+      displayName: "Unit Tests"
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'
