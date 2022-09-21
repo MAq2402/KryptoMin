@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace KryptoMin.Domain.ValueObjects
 {
     public class ExchangeRate : ValueObject
@@ -24,13 +26,14 @@ namespace KryptoMin.Domain.ValueObjects
 
         public override string ToString()
         {
-            return $"{Value},{Number},{Date},{Currency}";
+            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)},{Number},{Date},{Currency}";
         }
 
         public static explicit operator ExchangeRate(string value)
         {
             var splitted = value.Split(",");
-            return new ExchangeRate(Convert.ToDecimal(splitted[0]), splitted[1], splitted[2], splitted[3]);
+            var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
+            return new ExchangeRate(decimal.Parse(splitted[0], numberFormatInfo), splitted[1], splitted[2], splitted[3]);
         }
     }
 }

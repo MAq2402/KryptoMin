@@ -19,6 +19,11 @@ namespace KryptoMin.Application.Services
         public async Task Send(SendReportRequestDto request)
         {
             var report = await _reportRepository.Get(new Guid(request.PartitionKey), new Guid(request.RowKey));
+
+            if (report is null) 
+            {
+                throw new ArgumentNullException("Report with given ids has not been found");
+            }
             try
             {
                 await _emailSender.Send(request.Email, report);

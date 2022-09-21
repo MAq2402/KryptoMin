@@ -4,7 +4,7 @@ using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.ValueObjects;
 using Xunit;
 
-namespace KryptoMin.Application.Tests.Models;
+namespace KryptoMin.Domain.Tests.Entities;
 
 public class TransactionTests
 {
@@ -15,7 +15,7 @@ public class TransactionTests
     public void Transaction_CalculateCosts_ShouldWork(string amount, string fees, bool isSell, 
         decimal exchangeRateForAmount, decimal exchangeRateForFees, decimal expectedCost)
     {
-        var transaction = new Transaction(DateTime.Now, 
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount(amount), "4.61356493 USDT/PLN", 
             new Amount(fees), "200 USDT", isSell, "01223522377463013376051811");
         transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
@@ -30,7 +30,7 @@ public class TransactionTests
     public void Transaction_CalculateProfits_ShouldWork(string amount, string fees, bool isSell, 
         decimal exchangeRateForAmount, decimal exchangeRateForFees, decimal expectedProfits)
     {
-        var transaction = new Transaction(DateTime.Now, 
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount(amount), "4.61356493 USDT/PLN", 
             new Amount(fees), "200 USDT", isSell, "01223522377463013376051811");
         transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
@@ -49,7 +49,7 @@ public class TransactionTests
     [InlineData(2022, 7, 24, "2022-07-22")]
     public void Transaction_FormattedPreviousWorkingDay_ShouldWork(int year, int month, int day, string result)
     {
-        var transaction = new Transaction(new DateTime(year, month, day),
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(year, month, day),
             "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN",
             new Amount("28.31 EUR"), "200 USDT", false, "01223522377463013376051811");
 

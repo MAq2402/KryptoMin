@@ -23,7 +23,7 @@ namespace KryptoMin.Domain.ValueObjects
 
         public override string ToString()
         {
-            return $"{Value} {Currency}";
+            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)} {Currency}";
         }
     }
 }

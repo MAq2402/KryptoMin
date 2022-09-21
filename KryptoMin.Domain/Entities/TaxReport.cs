@@ -8,15 +8,15 @@ namespace KryptoMin.Domain.Entities
 
         public TaxReport(Guid partitionKey,
             Guid rowKey, 
-            List<Transaction> transactions, 
+            IEnumerable<Transaction> transactions, 
             decimal balance, 
             decimal balanceWithPreviousYearLoss, 
             decimal tax, 
             decimal previousYearLoss, 
-            string ownerEmail, 
-            TaxReportStatus status) : base(partitionKey, rowKey)
+            string ownerEmail = "", 
+            TaxReportStatus status = TaxReportStatus.Created) : base(partitionKey, rowKey)
         {
-            _transactions = transactions;
+            _transactions = transactions.ToList();
             Balance = balance;
             BalanceWithPreviousYearLoss = balanceWithPreviousYearLoss;
             Tax = tax;
