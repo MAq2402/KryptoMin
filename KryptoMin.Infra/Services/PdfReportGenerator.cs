@@ -14,9 +14,10 @@ namespace KryptoMin.Infra.Services
                         <span>Saldo ze stratą z poprzedniego roku: {1} zł</span>
                         <span>Strata z poprzedniego roku: {2} zł</span>
                         <span>Podatek: {3} zł</span></body>", report.Balance, report.BalanceWithPreviousYearLoss, report.PreviousYearLoss, report.Tax);
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                var pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-                pdf.Save(ms);
+                // //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                // var pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
+                // pdf.AddPage();
+                // pdf.Save(ms);
                 return Convert.ToBase64String(ms.ToArray());
             }
         }

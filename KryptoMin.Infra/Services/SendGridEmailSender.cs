@@ -12,16 +12,19 @@ namespace KryptoMin.Infra.Services
     {
         private readonly IPdfReportGenerator _pdfReportGenerator;
         private readonly EmailSettings _emailSettings;
+        private readonly IExcelReportGenerator _excelReportGenerator;
 
-        public SendGridEmailSender(IPdfReportGenerator pdfReportGenerator, EmailSettings emailSettings)
+        public SendGridEmailSender(IPdfReportGenerator pdfReportGenerator, IExcelReportGenerator excelReportGenerator, EmailSettings emailSettings)
         {
             _pdfReportGenerator = pdfReportGenerator;
             _emailSettings = emailSettings;
+            _excelReportGenerator = excelReportGenerator;
         }
 
         public async Task Send(string email, TaxReport report)
         {
-            var pdf = _pdfReportGenerator.Generate(report);
+            // var pdf = _pdfReportGenerator.Generate(report);
+            var excel =  _excelReportGenerator.Generate(report);
             var client = new SendGridClient(_emailSettings.ApiKey);
             var msg = new SendGridMessage()
             {
@@ -30,7 +33,8 @@ namespace KryptoMin.Infra.Services
                 PlainTextContent = "KryptoMin Report",
                 HtmlContent = "KryptoMin Report",
             };
-            msg.AddAttachment("KryptoMin_Raport.pdf", pdf);
+            // msg.AddAttachment("KryptoMin_Raport.pdf", pdf);
+            msg.AddAttachment("KryptoMin_Raport.xlsx", excel, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "attachment");
             msg.AddTo(new EmailAddress(email));
 
             var response = await client.SendEmailAsync(msg);
