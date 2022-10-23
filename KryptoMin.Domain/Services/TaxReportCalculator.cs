@@ -15,7 +15,7 @@ namespace KryptoMin.Domain.Services
             foreach (var transaction in transactions)
             {
                 var exchangeRateForAmount = GetExchangeRate(exchangeRates, transaction.Amount.Currency, transaction.FormattedPreviousWorkingDay);
-                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees.Currency, transaction.FormattedPreviousWorkingDay);
+                var exchangeRateForFees = GetExchangeRate(exchangeRates, transaction.Fees == null ? "" : transaction.Fees.Currency, transaction.FormattedPreviousWorkingDay);
 
                 transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
                 balance -= transaction.CalculateCosts();
@@ -32,7 +32,7 @@ namespace KryptoMin.Domain.Services
 
         private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)
         {
-            return exchangeRates.First(x => x.Currency == currency && x.Date == date);
+            return exchangeRates.FirstOrDefault(x => x.Currency == currency && x.Date == date);
         }
     }
 }

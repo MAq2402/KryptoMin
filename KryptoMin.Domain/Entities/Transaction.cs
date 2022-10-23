@@ -46,14 +46,15 @@ namespace KryptoMin.Domain.Entities
         public string Method { get; }
         public Amount Amount { get; }
         public string Price { get; }
-        public Amount Fees { get; }
+        public Amount? Fees { get; }
         public string FinalAmount { get; }
-        public bool IsSell { get; set; }
+        public bool IsSell { get; }
         public string TransactionId { get; }
         public ExchangeRate? ExchangeRateForAmount { get; private set; }
         public ExchangeRate? ExchangeRateForFees { get; private set; }
         public decimal Profits { get; private set; }
         public decimal Costs { get; private set; }
+        public bool HasFees => Fees is not null;
 
         public void SetExchangeRates(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
         {
@@ -73,13 +74,18 @@ namespace KryptoMin.Domain.Entities
 
         public decimal CalculateCosts()
         {
-            if (ExchangeRateForAmount is null || ExchangeRateForFees is null) 
+            if (ExchangeRateForAmount is null || (HasFees && ExchangeRateForFees is null))
             {
                 throw new InvalidOperationException("Before calculating costs exchange rates should be loaded.");
             }
-            Costs = IsSell ? Fees.Value * ExchangeRateForFees.Value : 
-                Amount.Value * ExchangeRateForAmount.Value + Fees.Value * ExchangeRateForFees.Value;
+            Costs = IsSell ? FeesCosts() : 
+                Amount.Value * ExchangeRateForAmount.Value + FeesCosts();
             return Costs;
+        }
+        
+        private decimal FeesCosts()
+        {
+            return HasFees ? Fees.Value * ExchangeRateForFees.Value : 0.0m;
         }
     }
 }
