@@ -46,15 +46,15 @@ namespace KryptoMin.Domain.Entities
         public string Method { get; }
         public Amount Amount { get; }
         public string Price { get; }
-        public Amount? Fees { get; }
+        public Amount Fees { get; }
         public string FinalAmount { get; }
         public bool IsSell { get; }
         public string TransactionId { get; }
-        public ExchangeRate? ExchangeRateForAmount { get; private set; }
-        public ExchangeRate? ExchangeRateForFees { get; private set; }
+        public ExchangeRate ExchangeRateForAmount { get; private set; }
+        public ExchangeRate ExchangeRateForFees { get; private set; }
         public decimal Profits { get; private set; }
         public decimal Costs { get; private set; }
-        public bool HasFees => Fees is not null;
+        public bool HasFees => Fees != Amount.Zero;
 
         public void SetExchangeRates(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
         {

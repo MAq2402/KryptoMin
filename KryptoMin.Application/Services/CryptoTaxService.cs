@@ -27,11 +27,11 @@ namespace KryptoMin.Application.Services
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
                 new Transaction(reportId, Guid.NewGuid(), x.Date, x.Method, new Amount(x.Amount), 
-                x.Price, string.IsNullOrEmpty(x.Fees) ? null : new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
+                x.Price, string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
             ).ToList();
 
             var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedPreviousWorkingDay));
-            var requestsForFees = transactions.Where(x => x.Fees != null).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
+            var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
             var report = _taxReportCalculator.Calculate(transactions, exchangeRates, reportId, request.PreviousYearLoss);
