@@ -21,8 +21,11 @@ namespace KryptoMin.Domain.Services
                 }
 
                 transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
-                balance -= transaction.CalculateCosts();
-                balance += transaction.CalculateProfits();
+                transaction.CalculateCosts();
+                transaction.CalculateProfits();
+
+                balance -= transaction.Costs;
+                balance += transaction.Profits;
             }
 
             balance = Math.Round(balance, DecimalPlaces);

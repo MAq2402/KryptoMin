@@ -65,4 +65,13 @@ public class AmountTests
 
         amount.ToString().Should().Be(value);
     }
+
+    [Fact]
+    public void Zero_ShouldWork()
+    {
+        var amount = Amount.Zero;
+
+        amount.Currency.Should().Be(string.Empty);
+        amount.Value.Should().Be(0);
+    }
 }

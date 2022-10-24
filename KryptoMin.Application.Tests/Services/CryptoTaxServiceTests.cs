@@ -21,7 +21,7 @@ namespace KryptoMin.Application.Tests.Services
         [Fact]
         public async Task GenerateReport_ShouldWork()
         {
-            var currencyProvider = new Mock<IExchangeRateProvider>();
+            var exchangeRateProvider = new Mock<IExchangeRateProvider>();
             var reportRepository = new Mock<IRepository<TaxReport>>();
             var taxReportCalculator = new Mock<ITaxReportCalculator>();
             var exchangeRates = new List<ExchangeRate>()
@@ -37,8 +37,8 @@ namespace KryptoMin.Application.Tests.Services
             taxReportCalculator.Setup(x =>
                 x.Calculate(It.IsAny<List<Transaction>>(), It.IsAny<List<ExchangeRate>>(), It.IsAny<Guid>(), It.IsAny<decimal>()))
                 .Returns(taxReport);
-            currencyProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
-            var sut = new CryptoTaxService(currencyProvider.Object, reportRepository.Object, taxReportCalculator.Object);
+            exchangeRateProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
+            var sut = new CryptoTaxService(exchangeRateProvider.Object, reportRepository.Object, taxReportCalculator.Object);
 
             var taxReportRequest = new TaxReportRequestDto
             {
@@ -75,7 +75,7 @@ namespace KryptoMin.Application.Tests.Services
                         Method = "Credit Card",
                         Amount = "2000.99 USD",
                         Price = "4.61356493 USDT/PLN",
-                        Fees = "50.21 EUR",
+                        Fees = string.Empty,
                         FinalAmount = "200 USDT",
                         Status = "Completed",
                         IsSell = true,
@@ -91,12 +91,11 @@ namespace KryptoMin.Application.Tests.Services
                 RowKey = taxReport.RowKey.ToString()
             };
 
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == "2022-05-17"))), Times.Once);
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-16"))), Times.Once);
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-16"))), Times.Once);
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-13"))), Times.Once);
-            currencyProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-13"))), Times.Once);
-            taxReportCalculator.Verify(x => x.Calculate(It.IsAny<List<Transaction>>(), It.IsAny<List<ExchangeRate>>(), It.IsAny<Guid>(), It.IsAny<decimal>()), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == "2022-05-17"))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-16"))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-16"))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-13"))), Times.Once);
+            taxReportCalculator.Verify(x => x.Calculate(It.IsAny<List<Transaction>>(), exchangeRates, It.IsAny<Guid>(), 999m), Times.Once);
             reportRepository.Verify(x => x.Add(taxReport), Times.Once);
 
             actual.PartitionKey.Should().Be(expected.PartitionKey);

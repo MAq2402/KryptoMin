@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.ValueObjects;
@@ -21,7 +22,47 @@ public class TransactionTests
         transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
             new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.ToString(), "XXX"));
 
-        transaction.CalculateCosts().Should().Be(expectedCost);
+        transaction.CalculateCosts();
+        transaction.Costs.Should().Be(expectedCost);
+    }
+
+     public static IEnumerable<object[]> Transaction_CalculateCosts_ShouldThrowInvalidOperationException_Data
+            => new object[][] {
+                new object[] { new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), null, true },
+                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), false }
+    };
+
+    [Theory]
+    [MemberData(nameof(Transaction_CalculateCosts_ShouldThrowInvalidOperationException_Data))]
+    public void Transaction_CalculateCosts_ShouldThrowInvalidOperationException(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees, bool isSell)
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
+            "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN", 
+            new Amount("231.27 USD"), "200 USDT", isSell, "01223522377463013376051811");
+        transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
+
+        Action act = () => transaction.CalculateCosts();
+
+        act.Should().ThrowExactly<InvalidOperationException>();
+    }
+
+    public static IEnumerable<object[]> Transaction_CalculateProfits_ShouldThrowInvalidOperationException_Data
+            => new object[][] {
+                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), true }
+    };
+
+    [Theory]
+    [MemberData(nameof(Transaction_CalculateProfits_ShouldThrowInvalidOperationException_Data))]
+    public void Transaction_CalculateProfits_ShouldThrowInvalidOperationException(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees, bool isSell)
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
+            "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN", 
+            new Amount("231.27 USD"), "200 USDT", isSell, "01223522377463013376051811");
+        transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
+
+        Action act = () => transaction.CalculateProfits();
+
+        act.Should().ThrowExactly<InvalidOperationException>();
     }
 
     [Theory]
@@ -36,7 +77,8 @@ public class TransactionTests
         transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
             new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.ToString(), "XXX"));
 
-        transaction.CalculateProfits().Should().Be(expectedProfits);
+        transaction.CalculateProfits();
+        transaction.Profits.Should().Be(expectedProfits);
     }
 
     [Theory]
