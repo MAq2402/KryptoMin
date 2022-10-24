@@ -68,7 +68,7 @@ namespace KryptoMin.Domain.Entities
             {
                 if (ExchangeRateForAmount is null)
                 {
-                    throw new InvalidOperationException("Before calculating profits exchange rates should be loaded.");
+                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
                 Profits = Amount.Value * ExchangeRateForAmount.Value;
             }
@@ -87,7 +87,7 @@ namespace KryptoMin.Domain.Entities
             else {
                 if (ExchangeRateForAmount is null)
                 {
-                    throw new InvalidOperationException("Before calculating profits exchange rates should be loaded.");
+                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
                 Costs = Amount.Value * ExchangeRateForAmount.Value + FeesCosts();
             }
@@ -99,7 +99,7 @@ namespace KryptoMin.Domain.Entities
             {
                 if (ExchangeRateForFees is null)
                 {
-                    throw new InvalidOperationException("Before calculating costs exchange rates should be loaded.");
+                    throw new InvalidOperationException("Before calculating costs exchange rates for fees should be loaded.");
                 }
                 return Fees.Value * ExchangeRateForFees.Value;
             }
