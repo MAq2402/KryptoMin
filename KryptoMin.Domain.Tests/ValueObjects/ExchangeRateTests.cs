@@ -23,5 +23,13 @@ namespace KryptoMin.Domain.Tests.ValueObjects
             var exchaneRate = new ExchangeRate(value, number, date, currency);
             ((ExchangeRate)exchaneRateAsString).Should().Be(exchaneRate);
         }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void ExplicitFromString_ShouldReturnNull(string exchaneRateAsString)
+        {
+            ((ExchangeRate)exchaneRateAsString).Should().Be(null);
+        }
     }
 }

@@ -48,12 +48,13 @@ namespace KryptoMin.Domain.Entities
         public string Price { get; }
         public Amount Fees { get; }
         public string FinalAmount { get; }
-        public bool IsSell { get; set; }
+        public bool IsSell { get; }
         public string TransactionId { get; }
-        public ExchangeRate? ExchangeRateForAmount { get; private set; }
-        public ExchangeRate? ExchangeRateForFees { get; private set; }
+        public ExchangeRate ExchangeRateForAmount { get; private set; }
+        public ExchangeRate ExchangeRateForFees { get; private set; }
         public decimal Profits { get; private set; }
         public decimal Costs { get; private set; }
+        public bool HasFees => Fees != Amount.Zero;
 
         public void SetExchangeRates(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
         {
@@ -61,25 +62,50 @@ namespace KryptoMin.Domain.Entities
             ExchangeRateForFees = exchangeRateForFees;
         }
 
-        public decimal CalculateProfits()
+        public void CalculateProfits()
         {
-            if (ExchangeRateForAmount is null) 
+            if (IsSell)
             {
-                throw new InvalidOperationException("Before calculating profits exchange rates should be loaded.");
+                if (ExchangeRateForAmount is null)
+                {
+                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
+                }
+                Profits = Amount.Value * ExchangeRateForAmount.Value;
             }
-            Profits = IsSell ? Amount.Value * ExchangeRateForAmount.Value : 0m; 
-            return Profits;
+            else
+            {
+                Profits = 0m;
+            }
         }
 
-        public decimal CalculateCosts()
+        public void CalculateCosts()
         {
-            if (ExchangeRateForAmount is null || ExchangeRateForFees is null) 
+            if (IsSell)
             {
-                throw new InvalidOperationException("Before calculating costs exchange rates should be loaded.");
+                Costs = FeesCosts();
             }
-            Costs = IsSell ? Fees.Value * ExchangeRateForFees.Value : 
-                Amount.Value * ExchangeRateForAmount.Value + Fees.Value * ExchangeRateForFees.Value;
-            return Costs;
+            else {
+                if (ExchangeRateForAmount is null)
+                {
+                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
+                }
+                Costs = Amount.Value * ExchangeRateForAmount.Value + FeesCosts();
+            }
+        }
+        
+        private decimal FeesCosts()
+        {
+            if (HasFees)
+            {
+                if (ExchangeRateForFees is null)
+                {
+                    throw new InvalidOperationException("Before calculating costs exchange rates for fees should be loaded.");
+                }
+                return Fees.Value * ExchangeRateForFees.Value;
+            }
+            else {
+                return 0.0m;
+            }
         }
     }
 }

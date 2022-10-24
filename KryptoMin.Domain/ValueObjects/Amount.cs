@@ -12,6 +12,14 @@ namespace KryptoMin.Domain.ValueObjects
             Currency = splittedAmount[1];
         }
 
+        private Amount()
+        {
+            Value = 0;
+            Currency = string.Empty;
+        }
+
+        public static Amount Zero => new Amount();
+
         public decimal Value { get; }
         public string Currency { get; }
 

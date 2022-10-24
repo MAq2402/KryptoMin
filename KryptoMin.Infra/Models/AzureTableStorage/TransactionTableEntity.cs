@@ -23,7 +23,7 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
             IsSell = transaction.IsSell;
             TransactionId = transaction.TransactionId;
             ExchangeRateForAmount = transaction.ExchangeRateForAmount.ToString();
-            ExchangeRateForFees = transaction.ExchangeRateForFees.ToString();
+            ExchangeRateForFees = transaction.HasFees ? transaction.ExchangeRateForFees.ToString() : string.Empty;
             Costs = Decimal.ToDouble(transaction.Costs);
             Profits = Decimal.ToDouble(transaction.Profits);
         }
@@ -45,7 +45,7 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
         {
             return new Transaction(new Guid(PartitionKey), 
                 new Guid(RowKey), Date, Method, new Amount(Amount), Price, 
-                new Amount(Fees), FinalAmount, IsSell, TransactionId, 
+                string.IsNullOrEmpty(Fees) ? Domain.ValueObjects.Amount.Zero : new Amount(Fees), FinalAmount, IsSell, TransactionId, 
                 (ExchangeRate)ExchangeRateForAmount, (ExchangeRate)ExchangeRateForFees, 
                 Convert.ToDecimal(Profits), Convert.ToDecimal(Costs));
         }

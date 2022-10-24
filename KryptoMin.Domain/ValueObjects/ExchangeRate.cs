@@ -31,6 +31,9 @@ namespace KryptoMin.Domain.ValueObjects
 
         public static explicit operator ExchangeRate(string value)
         {
+            if (string.IsNullOrEmpty(value)) {
+                return null;
+            }
             var splitted = value.Split(",");
             var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
             return new ExchangeRate(decimal.Parse(splitted[0], numberFormatInfo), splitted[1], splitted[2], splitted[3]);
