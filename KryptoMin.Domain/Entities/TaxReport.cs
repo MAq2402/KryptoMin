@@ -1,4 +1,5 @@
 using KryptoMin.Domain.Enums;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Domain.Entities
 {
@@ -9,15 +10,38 @@ namespace KryptoMin.Domain.Entities
 
         public TaxReport(Guid partitionKey,
             Guid rowKey, 
-            IEnumerable<Transaction> transactions, 
+            IEnumerable<Transaction> transactions,
             decimal previousYearCosts, 
-            string ownerEmail = "", 
-            TaxReportStatus status = TaxReportStatus.Created) : base(partitionKey, rowKey)
+            string ownerEmail, 
+            TaxReportStatus status) : base(partitionKey, rowKey)
         {
             _transactions = transactions.ToList();
             PreviousYearsCosts = previousYearCosts;
             OwnerEmail = ownerEmail;
             Status = status;
+        }
+
+        private TaxReport(Guid partitionKey,
+            Guid rowKey, 
+            IEnumerable<Transaction> transactions,
+            IEnumerable<ExchangeRate> exchangeRates,
+            decimal previousYearCosts,
+            TaxReportStatus status = TaxReportStatus.Created) : base(partitionKey, rowKey)
+        {
+            _transactions = transactions.ToList();
+            _transactions.ForEach(x => x.AssignExchangeRates(exchangeRates));
+            PreviousYearsCosts = previousYearCosts;
+            Status = status;
+        }
+
+        public static TaxReport Generate(Guid partitionKey,
+            Guid rowKey, 
+            IEnumerable<Transaction> transactions,
+            IEnumerable<ExchangeRate> exchangeRates,
+            decimal previousYearCosts,
+            TaxReportStatus status = TaxReportStatus.Created)
+        {
+            return new TaxReport(partitionKey, rowKey, transactions, exchangeRates, previousYearCosts, status);
         }
 
         public decimal Revenue => _transactions.Sum(x => x.CalculateProfits());
@@ -28,9 +52,6 @@ namespace KryptoMin.Domain.Entities
         public decimal Tax => Income > 0 ? Math.Round(Income * TaxRate, 0) : 0;
 
         public IEnumerable<Transaction> Transactions => _transactions;
-        public decimal Balance { get; }
-        public decimal BalanceWithPreviousYearLoss { get; }
-
         public string OwnerEmail { get; private set; }
         public TaxReportStatus Status { get; private set; }
 

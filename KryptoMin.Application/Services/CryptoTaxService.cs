@@ -23,20 +23,15 @@ namespace KryptoMin.Application.Services
         {
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
-                new Transaction(reportId, Guid.NewGuid(), x.Date, x.Method, new Amount(x.Amount),
-                x.Price, string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
+                new Transaction(reportId, Guid.NewGuid(), x.Date, new Amount(x.Amount),
+                string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.IsSell)
             ).ToList();
 
             var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.FormattedPreviousWorkingDay));
             var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
-            foreach (var transaction in transactions)
-            {
-                transaction.AssignExchangeRates(exchangeRates);
-            }
-
-            var report = new TaxReport(reportId, Guid.NewGuid(), transactions, request.PreviousYearLoss);
+            var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);
 
             await _reportRepository.Add(report);
             return new TaxReportResponseDto

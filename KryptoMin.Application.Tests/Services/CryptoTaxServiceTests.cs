@@ -31,7 +31,6 @@ namespace KryptoMin.Application.Tests.Services
                 new ExchangeRate(7.80m, "5", DateTime.Parse("2022-05-13"), "EUR"),
             };
 
-            var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(), 0, "email@mail.com", TaxReportStatus.Created);
             exchangeRateProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
             var sut = new CryptoTaxService(exchangeRateProvider.Object, reportRepository.Object);
 
@@ -80,12 +79,7 @@ namespace KryptoMin.Application.Tests.Services
             };
 
             var actual = await sut.GenerateReport(taxReportRequest);
-            var expected = new TaxReportResponseDto
-            {
-                PartitionKey = taxReport.PartitionKey.ToString(),
-                RowKey = taxReport.RowKey.ToString()
-            };
-
+    
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == "2022-05-17"))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-16"))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == "2022-05-16"))), Times.Once);

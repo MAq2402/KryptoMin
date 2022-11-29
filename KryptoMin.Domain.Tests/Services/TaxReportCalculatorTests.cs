@@ -23,17 +23,17 @@ namespace KryptoMin.Domain.Tests.Services
             var transactions = new List<Transaction>
             {
                 new Transaction(partitionKey, Guid.NewGuid(), DateTime.Parse("2022-05-18"),
-                    "Credit Card", new Amount("941.54 PLN"), "4.61356493 USDT/PLN",
-                    new Amount("18.83 PLN"), "200 USDT", false, "N01223522377463013376051811"),
+                    new Amount("941.54 PLN"),
+                    new Amount("18.83 PLN"), false),
                 new Transaction(partitionKey, Guid.NewGuid(), DateTime.Parse("2022-05-17"),
-                    "Credit Card", new Amount("500.54 EUR"), "4.61356493 USDT/PLN",
-                    new Amount("10.83 USD"), "200 USDT", false, "N01223522377463013376051812"),
+                    new Amount("500.54 EUR"),
+                    new Amount("10.83 USD"), false),
                 new Transaction(partitionKey, Guid.NewGuid(), DateTime.Parse("2022-05-16"),
-                    "Credit Card", new Amount("2000.99 USD"), "4.61356493 USDT/PLN",
-                    new Amount("50.21 EUR"), "200 USDT", true, "N0122352237746301337605183"),
+                    new Amount("2000.99 USD"),
+                    new Amount("50.21 EUR"), true),
                 new Transaction(partitionKey, Guid.NewGuid(), DateTime.Parse("2022-05-18"),
-                    "Credit Card", new Amount("1.00 PLN"), "4.61356493 USDT/PLN",
-                    Amount.Zero, "200 USDT", true, "N0122352237746301337605184")
+                    new Amount("1.00 PLN"),
+                    Amount.Zero, true)
             };
             var previousYearLoss = 999m;
             // var sut = new TaxReportCalculator();

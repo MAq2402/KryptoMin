@@ -14,24 +14,18 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
         {
             PartitionKey = report.PartitionKey.ToString();
             RowKey = report.RowKey.ToString();
-            Balance = Decimal.ToDouble(report.Balance);
-            BalanceWithPreviousYearLoss = Decimal.ToDouble(report.BalanceWithPreviousYearLoss);
-            Tax = Decimal.ToDouble(report.Tax);
-            PreviousYearLoss = Decimal.ToDouble(report.PreviousYearsCosts);
+            PreviousYearsCosts = Decimal.ToDouble(report.PreviousYearsCosts);
             OwnerEmail = report.OwnerEmail;
             Status = (int)report.Status;
         }
 
-        public double Balance { get; set; }
-        public double BalanceWithPreviousYearLoss { get; set; }
-        public double Tax { get; set; }
-        public double PreviousYearLoss { get; set; }
+        public double PreviousYearsCosts { get; set; }
         public string OwnerEmail { get; set; }
         public int Status { get; set; }
 
         public TaxReport ToDomain(List<Transaction> transactions)
         {
-            return new TaxReport(new Guid(PartitionKey), new Guid(RowKey), transactions, (decimal)PreviousYearLoss, OwnerEmail, (TaxReportStatus)Status);
+            return new TaxReport(new Guid(PartitionKey), new Guid(RowKey), transactions, (decimal)PreviousYearsCosts, OwnerEmail, (TaxReportStatus)Status);
         } 
     }
 }
