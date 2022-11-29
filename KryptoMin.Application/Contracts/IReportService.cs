@@ -4,6 +4,7 @@ namespace KryptoMin.Application.Contracts
 {
     public interface IReportService
     {
-        Task Send(SendReportRequestDto request);
+        Task<TaxReportResponseDto> Send(SendReportRequestDto request);
+        Task<TaxReportResponseDto> Get(GetReportRequestDto request);
     }
 }

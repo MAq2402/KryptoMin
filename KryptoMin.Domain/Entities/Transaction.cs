@@ -18,12 +18,10 @@ namespace KryptoMin.Domain.Entities
             TransactionId = transactionId;
         }
 
-
         public Transaction(Guid partitionKey, Guid rowKey, DateTime date, 
             string method, Amount amount, string price, Amount fees, 
             string finalAmount, bool isSell, string transactionId, 
-            ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees, 
-            decimal profits, decimal costs) : base(partitionKey, rowKey)
+            ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees) : base(partitionKey, rowKey)
         {
             Date = date;
             Method = method;
@@ -35,8 +33,6 @@ namespace KryptoMin.Domain.Entities
             TransactionId = transactionId;
             ExchangeRateForAmount = exchangeRateForAmount;
             ExchangeRateForFees = exchangeRateForFees;
-            Profits = profits;
-            Costs = costs;
         }
 
         public DateTime Date { get; }
@@ -52,17 +48,33 @@ namespace KryptoMin.Domain.Entities
         public string TransactionId { get; }
         public ExchangeRate ExchangeRateForAmount { get; private set; }
         public ExchangeRate ExchangeRateForFees { get; private set; }
-        public decimal Profits { get; private set; }
-        public decimal Costs { get; private set; }
         public bool HasFees => Fees != Amount.Zero;
 
-        public void SetExchangeRates(ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees)
+        // public void AssignExchangeRateForAmount(ExchangeRate exchangeRate)
+        // {
+        //     ExchangeRateForAmount = exchangeRate;
+        // }
+
+        // public void AssignExchangeRateForFees(ExchangeRate exchangeRate)
+        // {
+        //     ExchangeRateForFees = exchangeRate;
+        // }
+
+        public void AssignExchangeRates(IEnumerable<ExchangeRate> exchangeRates)
         {
-            ExchangeRateForAmount = exchangeRateForAmount;
-            ExchangeRateForFees = exchangeRateForFees;
+            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency, FormattedPreviousWorkingDay);
+            if (HasFees)
+            {
+                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency, FormattedPreviousWorkingDay);
+            }
         }
 
-        public void CalculateProfits()
+        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)
+        {
+            return exchangeRates.First(x => x.Currency == currency && x.FormattedDate == date);
+        }
+
+        public decimal CalculateProfits()
         {
             if (IsSell)
             {
@@ -70,26 +82,26 @@ namespace KryptoMin.Domain.Entities
                 {
                     throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                Profits = Amount.Value * ExchangeRateForAmount.Value;
+                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, 2);
             }
             else
             {
-                Profits = 0m;
+                return 0m;
             }
         }
 
-        public void CalculateCosts()
+        public decimal CalculateCosts()
         {
             if (IsSell)
             {
-                Costs = FeesCosts();
+                return FeesCosts();
             }
             else {
                 if (ExchangeRateForAmount is null)
                 {
                     throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                Costs = Amount.Value * ExchangeRateForAmount.Value + FeesCosts();
+                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, 2) + FeesCosts();
             }
         }
         
@@ -101,7 +113,7 @@ namespace KryptoMin.Domain.Entities
                 {
                     throw new InvalidOperationException("Before calculating costs exchange rates for fees should be loaded.");
                 }
-                return Fees.Value * ExchangeRateForFees.Value;
+                return Math.Round(Fees.Value * ExchangeRateForFees.Value, 2);
             }
             else {
                 return 0.0m;

@@ -2,7 +2,6 @@ using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.Repositories;
-using KryptoMin.Domain.Services;
 using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Services
@@ -13,20 +12,18 @@ namespace KryptoMin.Application.Services
         private const int DecimalPlaces = 2;
         private readonly IExchangeRateProvider _exchangeRateProvider;
         private readonly IRepository<TaxReport> _reportRepository;
-        private readonly ITaxReportCalculator _taxReportCalculator;
 
-        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IRepository<TaxReport> reportRepository, ITaxReportCalculator taxReportCalculator)
+        public CryptoTaxService(IExchangeRateProvider exchangeRateProvider, IRepository<TaxReport> reportRepository)
         {
             _exchangeRateProvider = exchangeRateProvider;
             _reportRepository = reportRepository;
-            _taxReportCalculator = taxReportCalculator;
         }
 
         public async Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request)
         {
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
-                new Transaction(reportId, Guid.NewGuid(), x.Date, x.Method, new Amount(x.Amount), 
+                new Transaction(reportId, Guid.NewGuid(), x.Date, x.Method, new Amount(x.Amount),
                 x.Price, string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.FinalAmount, x.IsSell, x.TransactionId)
             ).ToList();
 
@@ -34,7 +31,12 @@ namespace KryptoMin.Application.Services
             var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.FormattedPreviousWorkingDay));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
-            var report = _taxReportCalculator.Calculate(transactions, exchangeRates, reportId, request.PreviousYearLoss);
+            foreach (var transaction in transactions)
+            {
+                transaction.AssignExchangeRates(exchangeRates);
+            }
+
+            var report = new TaxReport(reportId, Guid.NewGuid(), transactions, request.PreviousYearLoss);
 
             await _reportRepository.Add(report);
             return new TaxReportResponseDto

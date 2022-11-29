@@ -4,7 +4,7 @@ namespace KryptoMin.Domain.ValueObjects
 {
     public class ExchangeRate : ValueObject
     {
-        public ExchangeRate(decimal value, string number, string date, string currency)
+        public ExchangeRate(decimal value, string number, DateTime date, string currency)
         {
             Value = value;
             Number = number;
@@ -12,21 +12,30 @@ namespace KryptoMin.Domain.ValueObjects
             Currency = currency;
         }
 
+        public ExchangeRate(decimal value, string number, string date, string currency)
+        {
+            Value = value;
+            Number = number;
+            Date = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            Currency = currency;
+        }
+
         public decimal Value { get;  }
         public string Number { get; }
-        public string Date { get; }
+        public DateTime Date { get; }
+        public string FormattedDate => Date.ToString("yyyy-MM-dd");
         public string Currency { get; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
-            yield return Date;
+            yield return FormattedDate;
             yield return Currency;
         }
 
         public override string ToString()
         {
-            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)},{Number},{Date},{Currency}";
+            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)},{Number},{FormattedDate},{Currency}";
         }
 
         public static explicit operator ExchangeRate(string value)

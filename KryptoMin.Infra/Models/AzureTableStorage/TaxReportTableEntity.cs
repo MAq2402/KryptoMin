@@ -17,7 +17,7 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
             Balance = Decimal.ToDouble(report.Balance);
             BalanceWithPreviousYearLoss = Decimal.ToDouble(report.BalanceWithPreviousYearLoss);
             Tax = Decimal.ToDouble(report.Tax);
-            PreviousYearLoss = Decimal.ToDouble(report.PreviousYearLoss);
+            PreviousYearLoss = Decimal.ToDouble(report.PreviousYearsCosts);
             OwnerEmail = report.OwnerEmail;
             Status = (int)report.Status;
         }
@@ -31,8 +31,7 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
 
         public TaxReport ToDomain(List<Transaction> transactions)
         {
-            return new TaxReport(new Guid(PartitionKey), new Guid(RowKey), transactions, (decimal)Balance,
-                (decimal)BalanceWithPreviousYearLoss, (decimal)Tax, (decimal)PreviousYearLoss, OwnerEmail, (TaxReportStatus)Status);
+            return new TaxReport(new Guid(PartitionKey), new Guid(RowKey), transactions, (decimal)PreviousYearLoss, OwnerEmail, (TaxReportStatus)Status);
         } 
     }
 }

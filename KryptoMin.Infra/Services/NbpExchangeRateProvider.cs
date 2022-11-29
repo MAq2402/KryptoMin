@@ -1,3 +1,4 @@
+using System.Globalization;
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.ValueObjects;
@@ -29,7 +30,7 @@ namespace KryptoMin.Infra.Services
 
         private bool CheckIfUniqueExchangeRate(List<ExchangeRate> rates, string currency, string date)
         {
-            return !rates.Any(x => x.Currency == currency && x.Date == date);
+            return !rates.Any(x => x.Currency == currency && x.FormattedDate == date);
         }
 
         private async Task<ExchangeRate> Get(string currency, string date)

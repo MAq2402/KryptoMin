@@ -11,25 +11,28 @@ public class TransactionTests
 {
 
     [Theory]
-    [InlineData("231.27 USD", "28.31 EUR", false, 2.5, 3.2, 668.767)]
-    [InlineData("282.31 EUR", "10.11 USD", true, 1.1, 7.2, 72.792)]
+    [InlineData("231.27 USD", "28.31 EUR", false, 2.5, 3.2, "USD", "EUR", 668.77)]
+    [InlineData("282.31 EUR", "10.11 USD", true, 1.1, 7.2, "EUR", "USD", 72.79)]
     public void Transaction_CalculateCosts_ShouldWork(string amount, string fees, bool isSell, 
-        decimal exchangeRateForAmount, decimal exchangeRateForFees, decimal expectedCost)
+        decimal exchangeRateForAmount, decimal exchangeRateForFees, string amountCurrency, string feesCurrency, decimal expectedCost)
     {
         var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount(amount), "4.61356493 USDT/PLN", 
             new Amount(fees), "200 USDT", isSell, "01223522377463013376051811");
-        transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
-            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.ToString(), "XXX"));
+        IEnumerable<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.AddDays(-1), amountCurrency),
+            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.AddDays(-1), feesCurrency)
+        };
+        transaction.AssignExchangeRates(exchangeRates);
 
-        transaction.CalculateCosts();
-        transaction.Costs.Should().Be(expectedCost);
+        transaction.CalculateCosts().Should().Be(expectedCost);
     }
 
      public static IEnumerable<object[]> Transaction_CalculateCosts_ShouldThrowInvalidOperationException_Data
             => new object[][] {
-                new object[] { new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), null, true },
-                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), false }
+                new object[] { new ExchangeRate(3.2m, "2", DateTime.Now, "XXX"), null, true },
+                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now, "XXX"), false }
     };
 
     [Theory]
@@ -39,7 +42,6 @@ public class TransactionTests
         var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN", 
             new Amount("231.27 USD"), "200 USDT", isSell, "01223522377463013376051811");
-        transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
 
         Action act = () => transaction.CalculateCosts();
 
@@ -48,7 +50,7 @@ public class TransactionTests
 
     public static IEnumerable<object[]> Transaction_CalculateProfits_ShouldThrowInvalidOperationException_Data
             => new object[][] {
-                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now.ToString(), "XXX"), true }
+                new object[] { null, new ExchangeRate(3.2m, "2", DateTime.Now, "XXX"), true }
     };
 
     [Theory]
@@ -58,7 +60,6 @@ public class TransactionTests
         var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount("231.27 USD"), "4.61356493 USDT/PLN", 
             new Amount("231.27 USD"), "200 USDT", isSell, "01223522377463013376051811");
-        transaction.SetExchangeRates(exchangeRateForAmount, exchangeRateForFees);
 
         Action act = () => transaction.CalculateProfits();
 
@@ -66,19 +67,22 @@ public class TransactionTests
     }
 
     [Theory]
-    [InlineData("231.27 USD", "28.31 EUR", false, 2.5, 3.2, 0)]
-    [InlineData("282.31 EUR", "10.11 USD", true, 1.1, 7.2, 310.541)]
+    [InlineData("231.27 USD", "28.31 EUR", false, 2.5, 3.2, "USD", "EUR", 0)]
+    [InlineData("282.31 EUR", "10.11 USD", true, 1.1, 7.2, "EUR", "USD", 310.54)]
     public void Transaction_CalculateProfits_ShouldWork(string amount, string fees, bool isSell, 
-        decimal exchangeRateForAmount, decimal exchangeRateForFees, decimal expectedProfits)
+        decimal exchangeRateForAmount, decimal exchangeRateForFees, string amountCurrency, string feesCurrency,  decimal expectedProfits)
     {
         var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now, 
             "Credit Card", new Amount(amount), "4.61356493 USDT/PLN", 
             new Amount(fees), "200 USDT", isSell, "01223522377463013376051811");
-        transaction.SetExchangeRates(new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.ToString(), "XXX"), 
-            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.ToString(), "XXX"));
+        IEnumerable<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.AddDays(-1), amountCurrency),
+            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.AddDays(-1), feesCurrency)
+        };
+        transaction.AssignExchangeRates(exchangeRates);
 
-        transaction.CalculateProfits();
-        transaction.Profits.Should().Be(expectedProfits);
+        transaction.CalculateProfits().Should().Be(expectedProfits);
     }
 
     [Theory]

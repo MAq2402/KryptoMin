@@ -11,24 +11,25 @@ using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Function
 {
-    public class ReportSender
+    public class ReportReceiver
     {
         private IReportService _reportService;
 
-        public ReportSender(IReportService reportService)
+        public ReportReceiver(IReportService reportService)
         {
             _reportService = reportService;
         }
 
-        [FunctionName("ReportSender")]
+        [FunctionName("ReportReceiver")]
+        // accept only get
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            var request = JsonConvert.DeserializeObject<SendReportRequestDto>
+            var request = JsonConvert.DeserializeObject<GetReportRequestDto>
                 (await new StreamReader(req.Body).ReadToEndAsync());
 
-            return new OkObjectResult(await _reportService.Send(request));
+            return new OkObjectResult(await _reportService.Get(request));
         }
     }
 }
