@@ -13,11 +13,11 @@ namespace KryptoMin.Function
 {
     public class CryptoTaxReport
     {
-        private readonly ICryptoTaxService _cryptoTaxService;
+        private readonly IReportService _service;
 
-        public CryptoTaxReport(ICryptoTaxService cryptoTaxService)
+        public CryptoTaxReport(IReportService service)
         {
-            _cryptoTaxService = cryptoTaxService;
+            _service = service;
         }
 
         [FunctionName("CryptoTaxReport")]
@@ -27,7 +27,7 @@ namespace KryptoMin.Function
         {
             var request = JsonConvert.DeserializeObject<TaxReportRequestDto>
                 (await new StreamReader(req.Body).ReadToEndAsync());
-            var result = await _cryptoTaxService.GenerateReport(request);
+            var result = await _service.GenerateReport(request);
             
             log.LogInformation("C# HTTP trigger function processed a request.");
 

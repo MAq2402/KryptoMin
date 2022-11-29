@@ -20,7 +20,6 @@ namespace KryptoMin.Function
         {
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
             builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
-            builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
             builder.Services.AddScoped<IRepository<TaxReport>, AzureTableStorageRepository>();
             builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
             builder.Services.AddScoped<IReportService, ReportService>();

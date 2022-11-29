@@ -6,5 +6,6 @@ namespace KryptoMin.Application.Contracts
     {
         Task<TaxReportResponseDto> Send(SendReportRequestDto request);
         Task<TaxReportResponseDto> Get(GetReportRequestDto request);
+        Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request);
     }
 }
