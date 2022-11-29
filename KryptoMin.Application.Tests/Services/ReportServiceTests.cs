@@ -111,7 +111,7 @@ namespace KryptoMin.Application.Tests.Services
             exchangeRateProvider.Setup(x => x.Get(It.IsAny<IEnumerable<ExchangeRateRequestDto>>())).ReturnsAsync(exchangeRates);
             var sut = new ReportService(emailSender.Object, reportRepository.Object, exchangeRateProvider.Object);
 
-            var taxReportRequest = new TaxReportRequestDto
+            var taxReportRequest = new GenerateRequestDto
             {
                 PreviousYearLoss = 999m,
                 Transactions = new List<TransactionDto>
@@ -119,43 +119,28 @@ namespace KryptoMin.Application.Tests.Services
                     new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-18"),
-                        Method = "Credit Card",
                         Amount = "941.54 PLN",
-                        Price = "4.61356493 USDT/PLN",
                         Fees = "18.83 PLN",
-                        FinalAmount = "200 USDT",
-                        Status = "Completed",
-                        IsSell = false,
-                        TransactionId = "N01223522377463013376051811"
+                        IsSell = false
                     },
                     new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-17"),
-                        Method = "Credit Card",
                         Amount = "500.54 EUR",
-                        Price = "4.61356493 USDT/PLN",
                         Fees = "10.83 USD",
-                        FinalAmount = "200 USDT",
-                        Status = "Completed",
-                        IsSell = false,
-                        TransactionId = "N01223522377463013376051812"
+                        IsSell = false
                     },
                     new TransactionDto
                     {
                         Date = DateTime.Parse("2022-05-16"),
-                        Method = "Credit Card",
                         Amount = "2000.99 USD",
-                        Price = "4.61356493 USDT/PLN",
                         Fees = string.Empty,
-                        FinalAmount = "200 USDT",
-                        Status = "Completed",
-                        IsSell = true,
-                        TransactionId = "N0122352237746301337605183"
+                        IsSell = true
                     }
                 }
             };
 
-            var actual = await sut.GenerateReport(taxReportRequest);
+            var actual = await sut.Generate(taxReportRequest);
     
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == "2022-05-17"))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == "2022-05-16"))), Times.Once);

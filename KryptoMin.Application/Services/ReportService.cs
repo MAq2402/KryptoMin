@@ -19,7 +19,7 @@ namespace KryptoMin.Application.Services
             _exchangeRateProvider = exchangeRateProvider;
         }
 
-        public async Task<TaxReportResponseDto> Send(SendReportRequestDto request)
+        public async Task<ReportResponseDto> Send(SendReportRequestDto request)
         {
             var report = await _reportRepository.Get(new Guid(request.PartitionKey), new Guid(request.RowKey));
 
@@ -42,21 +42,9 @@ namespace KryptoMin.Application.Services
             }
         }
 
-        public async Task<TaxReportResponseDto> Get(GetReportRequestDto request)
+        private ReportResponseDto MapToResponse(TaxReport report)
         {
-            var report = await _reportRepository.Get(new Guid(request.PartitionKey), new Guid(request.RowKey));
-
-            if (report is null)
-            {
-                throw new ArgumentNullException("Report with given ids has not been found.");
-            }
-
-            return MapToResponse(report);
-        }
-
-        private TaxReportResponseDto MapToResponse(TaxReport report)
-        {
-            return new TaxReportResponseDto
+            return new ReportResponseDto
             {
                 PartitionKey = report.PartitionKey.ToString(),
                 RowKey = report.RowKey.ToString(),
@@ -69,7 +57,7 @@ namespace KryptoMin.Application.Services
             };
         }
 
-        public async Task<TaxReportResponseDto> GenerateReport(TaxReportRequestDto request)
+        public async Task<GenerateResponseDto> Generate(GenerateRequestDto request)
         {
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
@@ -84,7 +72,7 @@ namespace KryptoMin.Application.Services
             var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);
 
             await _reportRepository.Add(report);
-            return new TaxReportResponseDto
+            return new GenerateResponseDto
             {
                 PartitionKey = report.PartitionKey.ToString(),
                 RowKey = report.RowKey.ToString()

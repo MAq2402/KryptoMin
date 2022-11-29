@@ -1,8 +1,8 @@
 namespace KryptoMin.Application.Dtos
 {
-    public class GetReportRequestDto
+    public class GenerateResponseDto
     {
-        public string PartitionKey { get; set; }
         public string RowKey { get; set; }
+        public string PartitionKey { get; set; }
     }
 }
