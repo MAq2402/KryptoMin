@@ -4,6 +4,8 @@ namespace KryptoMin.Domain.Entities
 {
     public class Transaction : Entity
     {
+        private const int Decimals = 2;
+
         public Transaction(Guid partitionKey, Guid rowKey, DateTime date, Amount amount, Amount fees, bool isSell) : base(partitionKey, rowKey)
         {
             Date = date;
@@ -56,7 +58,7 @@ namespace KryptoMin.Domain.Entities
                 {
                     throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, 2);
+                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals);
             }
             else
             {
@@ -75,7 +77,7 @@ namespace KryptoMin.Domain.Entities
                 {
                     throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, 2) + FeesCosts();
+                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals) + FeesCosts();
             }
         }
         
@@ -87,7 +89,7 @@ namespace KryptoMin.Domain.Entities
                 {
                     throw new InvalidOperationException("Before calculating costs exchange rates for fees should be loaded.");
                 }
-                return Math.Round(Fees.Value * ExchangeRateForFees.Value, 2);
+                return Math.Round(Fees.Value * ExchangeRateForFees.Value, Decimals);
             }
             else {
                 return 0.0m;
