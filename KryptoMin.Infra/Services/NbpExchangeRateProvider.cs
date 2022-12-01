@@ -28,12 +28,12 @@ namespace KryptoMin.Infra.Services
             return result;
         }
 
-        private bool CheckIfUniqueExchangeRate(List<ExchangeRate> rates, string currency, string date)
+        private bool CheckIfUniqueExchangeRate(List<ExchangeRate> rates, string currency, DateTime date)
         {
-            return !rates.Any(x => x.Currency == currency && x.FormattedDate == date);
+            return !rates.Any(x => x.Currency == currency && x.Date == date);
         }
 
-        private async Task<ExchangeRate> Get(string currency, string date)
+        private async Task<ExchangeRate> Get(string currency, DateTime date)
         {
             if (currency == PLN)
             {
@@ -41,7 +41,7 @@ namespace KryptoMin.Infra.Services
             }
             else
             {
-                var response = await _httpClient.Get(currency, date);
+                var response = await _httpClient.Get(currency, date.ToString("yyyy-MM-dd"));
 
                 return new ExchangeRate(response.Rates.First().Mid,
                     response.Rates.First().No, date, currency);

@@ -25,9 +25,8 @@ namespace KryptoMin.Domain.Entities
         }
 
         public DateTime Date { get; }
-        public DateTime PreviousWorkingDay => Date.DayOfWeek == DayOfWeek.Monday ? Date.AddDays(-3) : 
-            Date.DayOfWeek == DayOfWeek.Sunday ? Date.AddDays(-2) : Date.AddDays(-1);
-        public string FormattedPreviousWorkingDay => PreviousWorkingDay.ToString("yyyy-MM-dd");
+        public DateTime PreviousWorkingDay => Date.DayOfWeek == DayOfWeek.Monday ? Date.AddDays(-3).Date : 
+            Date.DayOfWeek == DayOfWeek.Sunday ? Date.AddDays(-2).Date : Date.AddDays(-1).Date;
         public Amount Amount { get; }
         public Amount Fees { get; }
         public bool IsSell { get; }
@@ -37,16 +36,16 @@ namespace KryptoMin.Domain.Entities
 
         public void AssignExchangeRates(IEnumerable<ExchangeRate> exchangeRates)
         {
-            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency, FormattedPreviousWorkingDay);
+            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency, PreviousWorkingDay);
             if (HasFees)
             {
-                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency, FormattedPreviousWorkingDay);
+                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency, PreviousWorkingDay);
             }
         }
 
-        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, string date)
+        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, DateTime date)
         {
-            return exchangeRates.First(x => x.Currency == currency && x.FormattedDate == date);
+            return exchangeRates.First(x => x.Currency == currency && x.Date == date);
         }
 
         public decimal CalculateProfits()

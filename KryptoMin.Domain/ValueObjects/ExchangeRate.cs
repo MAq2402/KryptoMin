@@ -4,38 +4,30 @@ namespace KryptoMin.Domain.ValueObjects
 {
     public class ExchangeRate : ValueObject
     {
+        private const string DateFormat = "yyyy-MM-dd";
         public ExchangeRate(decimal value, string number, DateTime date, string currency)
         {
             Value = value;
             Number = number;
-            Date = date;
-            Currency = currency;
-        }
-
-        public ExchangeRate(decimal value, string number, string date, string currency)
-        {
-            Value = value;
-            Number = number;
-            Date = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            Date = date.Date;
             Currency = currency;
         }
 
         public decimal Value { get;  }
         public string Number { get; }
         public DateTime Date { get; }
-        public string FormattedDate => Date.ToString("yyyy-MM-dd");
         public string Currency { get; }
 
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Value;
-            yield return FormattedDate;
+            yield return Date;
             yield return Currency;
         }
 
         public override string ToString()
         {
-            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)},{Number},{FormattedDate},{Currency}";
+            return $"{Value.ToString(System.Globalization.CultureInfo.InvariantCulture)},{Number},{Date.ToString(DateFormat)},{Currency}";
         }
 
         public static explicit operator ExchangeRate(string value)
@@ -45,7 +37,7 @@ namespace KryptoMin.Domain.ValueObjects
             }
             var splitted = value.Split(",");
             var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
-            return new ExchangeRate(decimal.Parse(splitted[0], numberFormatInfo), splitted[1], splitted[2], splitted[3]);
+            return new ExchangeRate(decimal.Parse(splitted[0], numberFormatInfo), splitted[1], DateTime.ParseExact(splitted[2], DateFormat, CultureInfo.InvariantCulture), splitted[3]);
         }
     }
 }

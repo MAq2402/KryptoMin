@@ -7,6 +7,7 @@ namespace KryptoMin.Domain.Entities
     {
         private List<Transaction> _transactions;
         private const decimal TaxRate = 0.19m;
+        private const int DecimalPlacesForTax = 0;
 
         public TaxReport(Guid partitionKey,
             Guid rowKey, 
@@ -49,7 +50,7 @@ namespace KryptoMin.Domain.Entities
         public decimal PreviousYearsCosts { get; }
         public decimal Income => Revenue - (Costs + PreviousYearsCosts) > 0 ? Revenue - (Costs + PreviousYearsCosts) : 0;
         public decimal CurrentYearCosts => (Costs + PreviousYearsCosts) - Revenue > 0 ? (Costs + PreviousYearsCosts) - Revenue : 0;
-        public decimal Tax => Income > 0 ? Math.Round(Income * TaxRate, 0) : 0;
+        public decimal Tax => Income > 0 ? Math.Round(Income * TaxRate, DecimalPlacesForTax) : 0;
 
         public IEnumerable<Transaction> Transactions => _transactions;
         public string OwnerEmail { get; private set; }
