@@ -13,7 +13,7 @@ namespace KryptoMin.Infra.Services
                 var html = string.Format(@"<body><span>Saldo: {0} zł</span>
                         <span>Saldo ze stratą z poprzedniego roku: {1} zł</span>
                         <span>Strata z poprzedniego roku: {2} zł</span>
-                        <span>Podatek: {3} zł</span></body>", report.Balance, report.BalanceWithPreviousYearLoss, report.PreviousYearLoss, report.Tax);
+                        <span>Podatek: {3} zł</span></body>", 0, 0, 0, 0);
                 // //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
                 // var pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
                 // pdf.AddPage();

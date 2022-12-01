@@ -28,9 +28,7 @@ namespace KryptoMin.Function
             var request = JsonConvert.DeserializeObject<SendReportRequestDto>
                 (await new StreamReader(req.Body).ReadToEndAsync());
 
-            await _reportService.Send(request);
-
-            return new NoContentResult();
+            return new OkObjectResult(await _reportService.Send(request));
         }
     }
 }

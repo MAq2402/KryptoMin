@@ -4,7 +4,6 @@ using KryptoMin.Application.Services;
 using KryptoMin.Application.Settings;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.Repositories;
-using KryptoMin.Domain.Services;
 using KryptoMin.Infra.Abstract;
 using KryptoMin.Infra.HttpClients;
 using KryptoMin.Infra.Services;
@@ -21,12 +20,10 @@ namespace KryptoMin.Function
         {
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
             builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
-            builder.Services.AddScoped<ICryptoTaxService, CryptoTaxService>();
             builder.Services.AddScoped<IRepository<TaxReport>, AzureTableStorageRepository>();
             builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
             builder.Services.AddScoped<IReportService, ReportService>();
             builder.Services.AddScoped<IPdfReportGenerator, PdfReportGenerator>();
-            builder.Services.AddScoped<ITaxReportCalculator, TaxReportCalculator>();
             builder.Services.AddScoped<IExcelReportGenerator, ExcelReportGenerator>();
 
             var emailSettings = new EmailSettings(Environment.GetEnvironmentVariable("SendGridApiKey"), 

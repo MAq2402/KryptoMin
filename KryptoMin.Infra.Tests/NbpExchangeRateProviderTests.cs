@@ -7,6 +7,7 @@ using FluentAssertions;
 using KryptoMin.Infra.Models.Nbp;
 using KryptoMin.Infra.HttpClients;
 using KryptoMin.Application.Dtos;
+using System;
 
 namespace KryptoMin.Infra.Tests;
 
@@ -36,12 +37,12 @@ public class NbpExchangeRateProviderTests
         var sut = new NbpExchangeRateProvider(mockedNbpHttpClient.Object);
         var requests = new List<ExchangeRateRequestDto>()
         {
-            new ExchangeRateRequestDto("USD", "2022-10-01"),
-            new ExchangeRateRequestDto("PLN", "2022-15-01"),
-            new ExchangeRateRequestDto("PLN", "2022-10-01"),
-            new ExchangeRateRequestDto("PLN", "2022-10-01"),
-            new ExchangeRateRequestDto("USD", "2022-10-01"),
-            new ExchangeRateRequestDto("EUR", "2022-02-01"),
+            new ExchangeRateRequestDto("USD", new DateTime(2022, 01, 10)),
+            new ExchangeRateRequestDto("PLN", new DateTime(2022, 01, 15)),
+            new ExchangeRateRequestDto("PLN", new DateTime(2022, 01, 10)),
+            new ExchangeRateRequestDto("PLN", new DateTime(2022, 01, 10)),
+            new ExchangeRateRequestDto("USD", new DateTime(2022, 01, 10)),
+            new ExchangeRateRequestDto("EUR", new DateTime(2022, 01, 2)),
         };
 
         var result = await sut.Get(requests);
