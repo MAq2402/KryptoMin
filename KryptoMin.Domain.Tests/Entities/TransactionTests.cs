@@ -16,12 +16,12 @@ public class TransactionTests
     public void Transaction_CalculateCosts_ShouldWork(string amount, string fees, bool isSell,
         decimal exchangeRateForAmount, decimal exchangeRateForFees, string amountCurrency, string feesCurrency, decimal expectedCost)
     {
-        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now,
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
             new Amount(amount), new Amount(fees), isSell);
         IEnumerable<ExchangeRate> exchangeRates = new List<ExchangeRate>()
         {
-            new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.AddDays(-1), amountCurrency),
-            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.AddDays(-1), feesCurrency)
+            new ExchangeRate(exchangeRateForAmount, "1", new DateTime(2022, 7, 22), amountCurrency),
+            new ExchangeRate(exchangeRateForFees, "2", new DateTime(2022, 7, 22), feesCurrency)
         };
         transaction.AssignExchangeRates(exchangeRates);
 
@@ -71,13 +71,13 @@ public class TransactionTests
     public void Transaction_CalculateProfits_ShouldWork(string amount, string fees, bool isSell,
         decimal exchangeRateForAmount, decimal exchangeRateForFees, string amountCurrency, string feesCurrency, decimal expectedProfits)
     {
-        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), DateTime.Now,
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
             new Amount(amount),
             new Amount(fees), isSell);
         IEnumerable<ExchangeRate> exchangeRates = new List<ExchangeRate>()
         {
-            new ExchangeRate(exchangeRateForAmount, "1", DateTime.Now.AddDays(-1), amountCurrency),
-            new ExchangeRate(exchangeRateForFees, "2", DateTime.Now.AddDays(-1), feesCurrency)
+            new ExchangeRate(exchangeRateForAmount, "1", new DateTime(2022, 7, 22), amountCurrency),
+            new ExchangeRate(exchangeRateForFees, "2", new DateTime(2022, 7, 22), feesCurrency)
         };
         transaction.AssignExchangeRates(exchangeRates);
 
@@ -100,4 +100,8 @@ public class TransactionTests
 
         transaction.PreviousWorkingDay.Should().Be(new DateTime(actualYear, actualMonth, actualDay));
     }
+
+
+    [Fact]
+    public v
 }
