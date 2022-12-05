@@ -10,7 +10,7 @@ namespace KryptoMin.Application.Settings
             Content = content;
         }
 
-        public string Content { get; set; }
+        public string Content { get; }
         public string ApiKey { get; }
         public string Address { get; }
         public string Name { get; }
