@@ -23,18 +23,14 @@ namespace KryptoMin.Infra.Services
 
         public async Task Send(string email, TaxReport report)
         {
-            // var pdf = _pdfReportGenerator.Generate(report);
-            var excel =  _excelReportGenerator.Generate(report);
             var client = new SendGridClient(_emailSettings.ApiKey);
             var msg = new SendGridMessage()
             {
                 From = new EmailAddress(_emailSettings.Address, _emailSettings.Name),
-                Subject = "KryptoMin Report",
-                PlainTextContent = "KryptoMin Report",
-                HtmlContent = "KryptoMin Report",
+                Subject = "KryptoMin Raport",
+                PlainTextContent = "KryptoMin Raport",
+                HtmlContent = _emailSettings.Content,
             };
-            // msg.AddAttachment("KryptoMin_Raport.pdf", pdf);
-            msg.AddAttachment("KryptoMin_Raport.xlsx", excel, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "attachment");
             msg.AddTo(new EmailAddress(email));
 
             var response = await client.SendEmailAsync(msg);

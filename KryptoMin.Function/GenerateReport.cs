@@ -11,18 +11,18 @@ using KryptoMin.Application.Dtos;
 
 namespace KryptoMin.Function
 {
-    public class CryptoTaxReport
+    public class GenerateReport
     {
         private readonly IReportService _service;
 
-        public CryptoTaxReport(IReportService service)
+        public GenerateReport(IReportService service)
         {
             _service = service;
         }
 
-        [FunctionName("CryptoTaxReport")]
+        [FunctionName(nameof(GenerateReport))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             var request = JsonConvert.DeserializeObject<GenerateRequestDto>

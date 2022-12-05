@@ -1,6 +1,5 @@
 using KryptoMin.Domain.Entities;
 using KryptoMin.Infra.Abstract;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace KryptoMin.Infra.Services
 {
@@ -10,14 +9,7 @@ namespace KryptoMin.Infra.Services
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                var html = string.Format(@"<body><span>Saldo: {0} zł</span>
-                        <span>Saldo ze stratą z poprzedniego roku: {1} zł</span>
-                        <span>Strata z poprzedniego roku: {2} zł</span>
-                        <span>Podatek: {3} zł</span></body>", 0, 0, 0, 0);
-                // //System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                // var pdf = PdfGenerator.GeneratePdf(html, PdfSharp.PageSize.A4);
-                // pdf.AddPage();
-                // pdf.Save(ms);
+                var html = string.Empty;
                 return Convert.ToBase64String(ms.ToArray());
             }
         }

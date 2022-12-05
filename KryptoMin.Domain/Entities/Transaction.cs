@@ -38,16 +38,16 @@ namespace KryptoMin.Domain.Entities
 
         public void AssignExchangeRates(IEnumerable<ExchangeRate> exchangeRates)
         {
-            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency, PreviousWorkingDay);
+            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency);
             if (HasFees)
             {
-                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency, PreviousWorkingDay);
+                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency);
             }
         }
 
-        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency, DateTime date)
+        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency)
         {
-            return exchangeRates.First(x => x.Currency == currency && x.Date == date);
+            return exchangeRates.First(x => x.Currency == currency && x.Date == PreviousWorkingDay);
         }
 
         public decimal CalculateProfits()
