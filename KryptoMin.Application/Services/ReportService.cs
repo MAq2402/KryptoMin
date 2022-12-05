@@ -27,19 +27,24 @@ namespace KryptoMin.Application.Services
             {
                 throw new ArgumentNullException("Report with given ids has not been found.");
             }
+
             try
             {
                 await _emailSender.Send(request.Email, report);
-                report.Succeed(request.Email);
-                await _reportRepository.Update(report);
-                return MapToResponse(report);
             }
             catch (Exception)
             {
                 report.Fail(request.Email);
-                await _reportRepository.Update(report);
-                throw;
+                return await UpdateReport(request, report);
             }
+            report.Succeed(request.Email);
+            return await UpdateReport(request, report);
+        }
+
+        private async Task<ReportResponseDto> UpdateReport(SendReportRequestDto request, TaxReport report)
+        {
+            await _reportRepository.Update(report);
+            return MapToResponse(report);
         }
 
         private ReportResponseDto MapToResponse(TaxReport report)

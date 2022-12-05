@@ -66,7 +66,7 @@ namespace KryptoMin.Application.Tests.Services
         }
 
         [Fact]
-        public async Task Send_ShouldFail_FailedToSend()
+        public async Task Send_ShouldWork_FailedToSend()
         {
             var exchangeRateProvider = new Mock<IExchangeRateProvider>();
             var emailSender = new Mock<IEmailSender>();
@@ -83,7 +83,7 @@ namespace KryptoMin.Application.Tests.Services
             emailSender.Setup(x => x.Send(request.Email, taxReport)).ThrowsAsync(new Exception());
             var sut = new ReportService(emailSender.Object, repository.Object, exchangeRateProvider.Object);
 
-            await sut.Invoking(x => x.Send(request)).Should().ThrowExactlyAsync<Exception>("Report with given ids has not been found");
+            await sut.Send(request);
 
             repository.Verify(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey)), Times.Once);
             emailSender.Verify(x => x.Send(request.Email, taxReport), Times.Once);

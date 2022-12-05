@@ -103,5 +103,66 @@ public class TransactionTests
 
 
     [Fact]
-    public v
+    public void AssignExchangeRates_ShouldWork_FeesNull()
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
+            new Amount("231.27 USD"),
+            Amount.Zero, false);
+
+        List<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 21), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "EUR"),
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 22), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 22), "EUR")
+        };
+        
+        transaction.AssignExchangeRates(exchangeRates);
+
+        transaction.ExchangeRateForAmount.Should().Be(exchangeRates[2]);
+        transaction.ExchangeRateForFees.Should().BeNull();
+    }
+
+    [Fact]
+    public void AssignExchangeRates_ShouldWork_FeesNotNull()
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
+            new Amount("231.27 USD"),
+            new Amount("28.31 EUR"), false);
+
+        List<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 21), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "EUR"),
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 22), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 22), "EUR")
+        };
+        
+        transaction.AssignExchangeRates(exchangeRates);
+
+        transaction.ExchangeRateForAmount.Should().Be(exchangeRates[2]);
+        transaction.ExchangeRateForFees.Should().Be(exchangeRates[3]);
+    }
+
+    [Fact]
+    public void AssignExchangeRates_ShouldFail_FeesNotNull()
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
+            new Amount("231.27 USD"),
+            new Amount("28.31 EUR"), false);
+
+        List<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 21), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "EUR"),
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 22), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 23), "EUR")
+        };
+        
+        Action action = () => transaction.AssignExchangeRates(exchangeRates);
+
+        action.Should().Throw<Exception>();
+
+        transaction.ExchangeRateForAmount.Should().Be(exchangeRates[2]);
+    }
 }
