@@ -19,7 +19,7 @@ namespace KryptoMin.Function
         public override void Configure(IFunctionsHostBuilder builder)
         {
             builder.Services.AddHttpClient<INbpHttpClient, NbpHttpClient>();
-            builder.Services.AddScoped<IExchangeRateProvider, NbpExchangeRateProvider>();
+            builder.Services.AddScoped<IExchangeRatesProvider, NbpImportedExchangeRatesProvider>();
             builder.Services.AddScoped<IRepository<TaxReport>, TaxReportRepository>();
             builder.Services.AddScoped<IEmailSender, SendGridEmailSender>();
             builder.Services.AddScoped<IReportService, ReportService>();

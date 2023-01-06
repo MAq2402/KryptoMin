@@ -144,6 +144,8 @@ public class TransactionTests
         transaction.ExchangeRateForFees.Should().Be(exchangeRates[3]);
     }
 
+    // Consider Domain Service for getting exchange rates that we are sure that the closest previous day is the correct day :D 
+    // It might be overcomplicating things
     [Fact]
     public void AssignExchangeRates_ShouldFail_FeesNotNull()
     {

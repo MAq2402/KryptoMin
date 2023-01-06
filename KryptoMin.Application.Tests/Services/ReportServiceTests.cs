@@ -20,7 +20,7 @@ namespace KryptoMin.Application.Tests.Services
         [Fact]
         public async Task Send_ShouldWork()
         {
-            var exchangeRateProvider = new Mock<IExchangeRateProvider>();
+            var exchangeRateProvider = new Mock<IExchangeRatesProvider>();
             var emailSender = new Mock<IEmailSender>();
             var repository = new Mock<IRepository<TaxReport>>();
             var request = new SendReportRequestDto
@@ -46,7 +46,7 @@ namespace KryptoMin.Application.Tests.Services
         [Fact]
         public async Task Send_ShouldFail_ReportIsNull()
         {
-            var exchangeRateProvider = new Mock<IExchangeRateProvider>();
+            var exchangeRateProvider = new Mock<IExchangeRatesProvider>();
             var emailSender = new Mock<IEmailSender>();
             var repository = new Mock<IRepository<TaxReport>>();
             var request = new SendReportRequestDto
@@ -68,7 +68,7 @@ namespace KryptoMin.Application.Tests.Services
         [Fact]
         public async Task Send_ShouldWork_FailedToSend()
         {
-            var exchangeRateProvider = new Mock<IExchangeRateProvider>();
+            var exchangeRateProvider = new Mock<IExchangeRatesProvider>();
             var emailSender = new Mock<IEmailSender>();
             var repository = new Mock<IRepository<TaxReport>>();
             var request = new SendReportRequestDto
@@ -96,7 +96,7 @@ namespace KryptoMin.Application.Tests.Services
         [Fact]
         public async Task GenerateReport_ShouldWork()
         {
-            var exchangeRateProvider = new Mock<IExchangeRateProvider>();
+            var exchangeRateProvider = new Mock<IExchangeRatesProvider>();
             var reportRepository = new Mock<IRepository<TaxReport>>();
             var emailSender = new Mock<IEmailSender>();
             var exchangeRates = new List<ExchangeRate>()

@@ -1,4 +1,5 @@
- using KryptoMin.Domain.ValueObjects;
+using System.Linq;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Domain.Entities
 {
@@ -47,7 +48,7 @@ namespace KryptoMin.Domain.Entities
 
         private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency)
         {
-            return exchangeRates.First(x => x.Currency == currency && x.Date == PreviousWorkingDay);
+            return exchangeRates.Where(x => x.Date < Date).OrderByDescending(x => x.Date).First(x => x.Currency == currency);
         }
 
         public decimal CalculateProfits()

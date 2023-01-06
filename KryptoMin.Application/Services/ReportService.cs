@@ -10,9 +10,9 @@ namespace KryptoMin.Application.Services
     {
         private readonly IRepository<TaxReport> _reportRepository;
         private readonly IEmailSender _emailSender;
-        private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IExchangeRatesProvider _exchangeRateProvider;
 
-        public ReportService(IEmailSender emailSender, IRepository<TaxReport> reportRepository, IExchangeRateProvider exchangeRateProvider)
+        public ReportService(IEmailSender emailSender, IRepository<TaxReport> reportRepository, IExchangeRatesProvider exchangeRateProvider)
         {
             _reportRepository = reportRepository;
             _emailSender = emailSender;

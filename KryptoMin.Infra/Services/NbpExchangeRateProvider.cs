@@ -6,7 +6,7 @@ using KryptoMin.Infra.HttpClients;
 
 namespace KryptoMin.Infra.Services
 {
-    public class NbpExchangeRateProvider : IExchangeRateProvider
+    public class NbpExchangeRateProvider : IExchangeRatesProvider
     {
         private const string PLN = "PLN";
         private readonly INbpHttpClient _httpClient;
