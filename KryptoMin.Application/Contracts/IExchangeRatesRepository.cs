@@ -5,7 +5,7 @@ namespace KryptoMin.Application.Contracts
 {
     public interface IExchangeRatesRepository
     {
-        //Consider different type for exchangerate
+        //Consider different type for exchangerate = a list
         Task<ExchangeRate> GetForPreviousWorkingDay(string currency, DateTime date);
         Task Insert(IEnumerable<NbpCsvExchnageRateDto> exchangeRates);
         Task RemoveAll();
