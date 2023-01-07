@@ -11,6 +11,7 @@ namespace KryptoMin.Infra.Services
 {
     public class ExchangeRatesRepository : AzureTableStorageRepository, IExchangeRatesRepository
     {
+        private const string PLN = "PLN";
         private readonly CloudTable _exchangeRates;
 
         public ExchangeRatesRepository(DbSettings dbSettings) : base(dbSettings)
@@ -18,17 +19,24 @@ namespace KryptoMin.Infra.Services
             _exchangeRates = CreateCloudTableClient("ExchangeRates");
         }
 
-        public async Task<ExchangeRate> GetForPreviousWorkingDay(string currency, DateTime date)
+        public async Task<List<ExchangeRate>> GetExchangeRates(IEnumerable<ExchangeRateRequestDto> requests)
         {
-            // Execute only once - pass collection of currencies ;)
-            // Getting currencies from refelction?
-            // Setting numbers 
-            // Get only once exchange rate for same currency and date pair 
-            var items = _exchangeRates.ExecuteQuery(new TableQuery<ExchangeRateTableEntity>()).ToList();
+            var exchangeRates = _exchangeRates.ExecuteQuery(new TableQuery<ExchangeRateTableEntity>()).ToList();
+            var result = new List<ExchangeRate>();
+            foreach (var request in requests)
+            {
+                if (request.Currency == PLN)
+                {
+                    result.Add(new ExchangeRate(1, string.Empty, request.Date, PLN));
+                }
+                else
+                {
+                    var exchangeRate = exchangeRates.Where(x => ParseDate(x.Date) <= request.Date).OrderByDescending(x => x.Date).First();
+                    result.Add(new ExchangeRate(GetValue(exchangeRate, request.Currency), exchangeRate.FullNumber, ParseDate(exchangeRate.Date), request.Currency));
+                }
+            }
 
-            
-            var result = items.Where(x => ParseDate(x.Date) <= date).OrderByDescending(x => x.Date).First();
-            return await Task.FromResult(new ExchangeRate(GetValue(result, currency), result.FullNumber, ParseDate(result.Date), currency));
+            return await Task.FromResult(result);
         }
 
         private DateTime ParseDate(string date)
