@@ -70,8 +70,8 @@ namespace KryptoMin.Application.Services
                 string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.IsSell)
             ).ToList();
 
-            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.PreviousWorkingDay));
-            var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.PreviousWorkingDay));
+            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.Date));
+            var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.Date));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
             var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);

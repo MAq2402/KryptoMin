@@ -84,22 +84,22 @@ public class TransactionTests
         transaction.CalculateProfits().Should().Be(expectedProfits);
     }
 
-    [Theory]
-    [InlineData(2022, 7, 18, 2022, 07, 15)]
-    [InlineData(2022, 7, 19, 2022, 07, 18)]
-    [InlineData(2022, 7, 20, 2022, 07, 19)]
-    [InlineData(2022, 7, 21, 2022, 07, 20)]
-    [InlineData(2022, 7, 22, 2022, 07, 21)]
-    [InlineData(2022, 7, 23, 2022, 07, 22)]
-    [InlineData(2022, 7, 24, 2022, 07, 22)]
-    public void Transaction_PreviousWorkingDay_ShouldWork(int year, int month, int day, int actualYear, int actualMonth, int actualDay)
-    {
-        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(year, month, day),
-            new Amount("231.27 USD"),
-            new Amount("28.31 EUR"), false);
+    // [Theory]
+    // [InlineData(2022, 7, 18, 2022, 07, 15)]
+    // [InlineData(2022, 7, 19, 2022, 07, 18)]
+    // [InlineData(2022, 7, 20, 2022, 07, 19)]
+    // [InlineData(2022, 7, 21, 2022, 07, 20)]
+    // [InlineData(2022, 7, 22, 2022, 07, 21)]
+    // [InlineData(2022, 7, 23, 2022, 07, 22)]
+    // [InlineData(2022, 7, 24, 2022, 07, 22)]
+    // public void Transaction_PreviousWorkingDay_ShouldWork(int year, int month, int day, int actualYear, int actualMonth, int actualDay)
+    // {
+    //     var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(year, month, day),
+    //         new Amount("231.27 USD"),
+    //         new Amount("28.31 EUR"), false);
 
-        transaction.PreviousWorkingDay.Should().Be(new DateTime(actualYear, actualMonth, actualDay));
-    }
+    //     transaction.PreviousWorkingDay.Should().Be(new DateTime(actualYear, actualMonth, actualDay));
+    // }
 
 
     [Fact]
@@ -156,7 +156,7 @@ public class TransactionTests
         List<ExchangeRate> exchangeRates = new List<ExchangeRate>()
         {
             new ExchangeRate(3, "1", new DateTime(2022, 7, 21), "USD"),
-            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "EUR"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "GBP"),
             new ExchangeRate(3, "1", new DateTime(2022, 7, 22), "USD"),
             new ExchangeRate(2, "2", new DateTime(2022, 7, 23), "EUR")
         };

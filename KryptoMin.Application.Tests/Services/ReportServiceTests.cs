@@ -142,10 +142,10 @@ namespace KryptoMin.Application.Tests.Services
 
             var actual = await sut.Generate(taxReportRequest);
     
-            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == DateTime.Parse("2022-05-17")))), Times.Once);
-            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == DateTime.Parse("2022-05-16")))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == DateTime.Parse("2022-05-18")))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == DateTime.Parse("2022-05-17")))), Times.Once);
+            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == DateTime.Parse("2022-05-17")))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == DateTime.Parse("2022-05-16")))), Times.Once);
-            exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == DateTime.Parse("2022-05-13")))), Times.Once);
             reportRepository.Verify(x => x.Add(It.IsAny<TaxReport>()), Times.Once);
             actual.Should().NotBeNull();
         }

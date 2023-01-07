@@ -31,7 +31,7 @@ namespace KryptoMin.Infra.Services
                 }
                 else
                 {
-                    var exchangeRate = exchangeRates.Where(x => ParseDate(x.Date) <= request.Date).OrderByDescending(x => x.Date).First();
+                    var exchangeRate = exchangeRates.Where(x => ParseDate(x.Date) < request.Date).OrderByDescending(x => x.Date).First();
                     result.Add(new ExchangeRate(GetValue(exchangeRate, request.Currency), exchangeRate.FullNumber, ParseDate(exchangeRate.Date), request.Currency));
                 }
             }
