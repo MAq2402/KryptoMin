@@ -1,4 +1,5 @@
- using KryptoMin.Domain.ValueObjects;
+using System.Linq;
+using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Domain.Entities
 {
@@ -27,8 +28,6 @@ namespace KryptoMin.Domain.Entities
         }
 
         public DateTime Date { get; }
-        public DateTime PreviousWorkingDay => Date.DayOfWeek == DayOfWeek.Monday ? Date.AddDays(-3).Date : 
-            Date.DayOfWeek == DayOfWeek.Sunday ? Date.AddDays(-2).Date : Date.AddDays(-1).Date;
         public Amount Amount { get; }
         public Amount Fees { get; }
         public bool IsSell { get; }
@@ -38,16 +37,16 @@ namespace KryptoMin.Domain.Entities
 
         public void AssignExchangeRates(IEnumerable<ExchangeRate> exchangeRates)
         {
-            ExchangeRateForAmount = GetExchangeRate(exchangeRates, Amount.Currency);
+            ExchangeRateForAmount = GetExchangeRateForPreviousWorkingDay(exchangeRates, Amount.Currency);
             if (HasFees)
             {
-                ExchangeRateForFees = GetExchangeRate(exchangeRates, Fees.Currency);
+                ExchangeRateForFees = GetExchangeRateForPreviousWorkingDay(exchangeRates, Fees.Currency);
             }
         }
 
-        private ExchangeRate GetExchangeRate(IEnumerable<ExchangeRate> exchangeRates, string currency)
+        private ExchangeRate GetExchangeRateForPreviousWorkingDay(IEnumerable<ExchangeRate> exchangeRates, string currency)
         {
-            return exchangeRates.First(x => x.Currency == currency && x.Date == PreviousWorkingDay);
+            return exchangeRates.Where(x => x.Date < Date).OrderByDescending(x => x.Date).First(x => x.Currency == currency);
         }
 
         public decimal CalculateProfits()

@@ -3,7 +3,7 @@ using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Application.Contracts
 {
-    public interface IExchangeRateProvider
+    public interface IExchangeRatesProvider
     {
         Task<IEnumerable<ExchangeRate>> Get(IEnumerable<ExchangeRateRequestDto> requests);
     }

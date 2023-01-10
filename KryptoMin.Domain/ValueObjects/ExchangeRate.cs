@@ -36,8 +36,14 @@ namespace KryptoMin.Domain.ValueObjects
                 return null;
             }
             var splitted = value.Split(",");
+
+            return new ExchangeRate(ParseValue(splitted[0]), splitted[1], DateTime.ParseExact(splitted[2], DateFormat, CultureInfo.InvariantCulture), splitted[3]);
+        }
+
+        private static decimal ParseValue(string value)
+        {
             var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
-            return new ExchangeRate(decimal.Parse(splitted[0], numberFormatInfo), splitted[1], DateTime.ParseExact(splitted[2], DateFormat, CultureInfo.InvariantCulture), splitted[3]);
+            return decimal.Parse(value, numberFormatInfo);
         }
     }
 }

@@ -10,9 +10,9 @@ namespace KryptoMin.Application.Services
     {
         private readonly IRepository<TaxReport> _reportRepository;
         private readonly IEmailSender _emailSender;
-        private readonly IExchangeRateProvider _exchangeRateProvider;
+        private readonly IExchangeRatesProvider _exchangeRateProvider;
 
-        public ReportService(IEmailSender emailSender, IRepository<TaxReport> reportRepository, IExchangeRateProvider exchangeRateProvider)
+        public ReportService(IEmailSender emailSender, IRepository<TaxReport> reportRepository, IExchangeRatesProvider exchangeRateProvider)
         {
             _reportRepository = reportRepository;
             _emailSender = emailSender;
@@ -70,8 +70,8 @@ namespace KryptoMin.Application.Services
                 string.IsNullOrEmpty(x.Fees) ? Amount.Zero : new Amount(x.Fees), x.IsSell)
             ).ToList();
 
-            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.PreviousWorkingDay));
-            var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.PreviousWorkingDay));
+            var requestsForAmounts = transactions.Select(x => new ExchangeRateRequestDto(x.Amount.Currency, x.Date));
+            var requestsForFees = transactions.Where(x => x.HasFees).Select(x => new ExchangeRateRequestDto(x.Fees.Currency, x.Date));
             var exchangeRates = await _exchangeRateProvider.Get(requestsForAmounts.Concat(requestsForFees));
 
             var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);
