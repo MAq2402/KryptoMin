@@ -44,7 +44,7 @@ namespace KryptoMin.Infra.Services
             return DateTime.ParseExact(date, "yyyyMMdd", CultureInfo.InvariantCulture);
         }
 
-        public decimal GetValue(object src, string propName)
+        private decimal GetValue(object src, string propName)
         {
             var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "," };
             return decimal.Parse(src.GetType().GetProperty(propName).GetValue(src, null) as string, numberFormatInfo);
