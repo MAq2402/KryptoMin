@@ -15,7 +15,9 @@ namespace KryptoMin.Infra.Services
 
         public async Task<IEnumerable<ExchangeRate>> Get(IEnumerable<ExchangeRateRequestDto> requests)
         {
-            return await _exchangeRatesRepository.GetExchangeRates(requests.Where(x => x.Currency != ExchangeRate.DefaultCurrency).DistinctBy(x => new { x.Currency, x.Date }));
+            return await _exchangeRatesRepository.GetExchangeRates(requests
+                .Where(x => x.Currency != ExchangeRate.DefaultCurrency)
+                .DistinctBy(x => new { x.Currency, x.Date }));
         }
     }
 }
