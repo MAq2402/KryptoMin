@@ -8,6 +8,7 @@ namespace KryptoMin.Application.Services
 {
     public class ExchangeRatesImportService : IExchangeRatesImportService
     {
+        private const int HeaderRowsCount = 2;
         private IExchangeRatesRepository _exchangeRatesRepository;
 
         public ExchangeRatesImportService(IExchangeRatesRepository exchangeRatesRepository)
@@ -26,7 +27,7 @@ namespace KryptoMin.Application.Services
             using (var csv = new CsvReader(reader, config))
             {
                 await _exchangeRatesRepository.RemoveAll();
-                var records = csv.GetRecords<NbpCsvExchnageRateDto>().ToList().Skip(2).TakeWhile(item => item.Date.All(x => char.IsDigit(x)));
+                var records = csv.GetRecords<NbpCsvExchnageRateDto>().ToList().Skip(HeaderRowsCount).TakeWhile(item => item.Date.All(x => char.IsDigit(x)));
                 await _exchangeRatesRepository.Insert(records);
             }
         }

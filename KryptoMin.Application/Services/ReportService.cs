@@ -58,7 +58,20 @@ namespace KryptoMin.Application.Services
                 Income = report.Income,
                 PreviousYearsCosts = report.PreviousYearsCosts,
                 Revenue = report.Revenue,
-                Tax = report.Tax
+                Tax = report.Tax,
+                ExchangeRates = report.Transactions.Select(x => new ExchangeRateResponseDto
+                {
+                    Currency = x.ExchangeRateForAmount.Currency,
+                    Date = x.ExchangeRateForAmount.Date,
+                    Number = x.ExchangeRateForAmount.Number,
+                    Value = x.ExchangeRateForAmount.Value
+                }).Concat(report.Transactions.Where(x => x.HasFees).Select(x => new ExchangeRateResponseDto
+                {
+                    Currency = x.ExchangeRateForFees.Currency,
+                    Date = x.ExchangeRateForFees.Date,
+                    Number = x.ExchangeRateForFees.Number,
+                    Value = x.ExchangeRateForFees.Value
+                })).Where(x => x.Currency != ExchangeRate.DefaultCurrency).DistinctBy(x => new { x.Currency, x.Number })
             };
         }
 
