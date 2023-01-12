@@ -147,4 +147,25 @@ public class TransactionTests
 
         transaction.ExchangeRateForAmount.Should().Be(exchangeRates[2]);
     }
+
+    [Fact]
+    public void AssignExchangeRates_ShouldWork_FeesNotNull_DefaultCurrency()
+    {
+        var transaction = new Transaction(Guid.NewGuid(), Guid.NewGuid(), new DateTime(2022, 7, 23),
+            new Amount("231.27 PLN"),
+            new Amount("28.31 PLN"), false);
+
+        List<ExchangeRate> exchangeRates = new List<ExchangeRate>()
+        {
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 21), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 21), "EUR"),
+            new ExchangeRate(3, "1", new DateTime(2022, 7, 22), "USD"),
+            new ExchangeRate(2, "2", new DateTime(2022, 7, 22), "EUR")
+        };
+        
+        transaction.AssignExchangeRates(exchangeRates);
+
+        transaction.ExchangeRateForAmount.Should().Be(ExchangeRate.Default);
+        transaction.ExchangeRateForFees.Should().Be(ExchangeRate.Default);
+    }
 }
