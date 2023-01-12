@@ -12,17 +12,17 @@ namespace KryptoMin.Domain.Entities
             Date = date;
             Amount = amount;
             Fees = fees;
-            IsSell = isSell; 
+            IsSell = isSell;
         }
 
-        public Transaction(Guid partitionKey, Guid rowKey, DateTime date, 
-            Amount amount, Amount fees, bool isSell, 
+        public Transaction(Guid partitionKey, Guid rowKey, DateTime date,
+            Amount amount, Amount fees, bool isSell,
             ExchangeRate exchangeRateForAmount, ExchangeRate exchangeRateForFees) : base(partitionKey, rowKey)
         {
             Date = date;
             Amount = amount;
             Fees = fees;
-            IsSell = isSell; 
+            IsSell = isSell;
             ExchangeRateForAmount = exchangeRateForAmount;
             ExchangeRateForFees = exchangeRateForFees;
         }
@@ -37,16 +37,17 @@ namespace KryptoMin.Domain.Entities
 
         public void AssignExchangeRates(IEnumerable<ExchangeRate> exchangeRates)
         {
-            ExchangeRateForAmount = GetExchangeRateForPreviousWorkingDay(exchangeRates, Amount.Currency);
+            ExchangeRateForAmount = FindExchangeRateForPreviousWorkingDay(exchangeRates, Amount.Currency);
             if (HasFees)
             {
-                ExchangeRateForFees = GetExchangeRateForPreviousWorkingDay(exchangeRates, Fees.Currency);
+                ExchangeRateForFees = FindExchangeRateForPreviousWorkingDay(exchangeRates, Fees.Currency);
             }
         }
 
-        private ExchangeRate GetExchangeRateForPreviousWorkingDay(IEnumerable<ExchangeRate> exchangeRates, string currency)
+        private ExchangeRate FindExchangeRateForPreviousWorkingDay(IEnumerable<ExchangeRate> exchangeRates, string currency)
         {
-            return exchangeRates.Where(x => x.Date < Date).OrderByDescending(x => x.Date).First(x => x.Currency == currency);
+            return currency == ExchangeRate.DefaultCurrency ? ExchangeRate.Default :
+                exchangeRates.Where(x => x.Date < Date).OrderByDescending(x => x.Date).First(x => x.Currency == currency);
         }
 
         public decimal CalculateProfits()
@@ -71,7 +72,8 @@ namespace KryptoMin.Domain.Entities
             {
                 return FeesCosts();
             }
-            else {
+            else
+            {
                 if (ExchangeRateForAmount is null)
                 {
                     throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
@@ -79,7 +81,7 @@ namespace KryptoMin.Domain.Entities
                 return Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals) + FeesCosts();
             }
         }
-        
+
         private decimal FeesCosts()
         {
             if (HasFees)
@@ -90,7 +92,8 @@ namespace KryptoMin.Domain.Entities
                 }
                 return Math.Round(Fees.Value * ExchangeRateForFees.Value, Decimals);
             }
-            else {
+            else
+            {
                 return 0.0m;
             }
         }

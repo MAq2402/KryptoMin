@@ -5,6 +5,7 @@ namespace KryptoMin.Domain.ValueObjects
     public class ExchangeRate : ValueObject
     {
         private const string DateFormat = "yyyy-MM-dd";
+        public static readonly string DefaultCurrency = "PLN";
         public ExchangeRate(decimal value, string number, DateTime date, string currency)
         {
             Value = value;
@@ -17,6 +18,8 @@ namespace KryptoMin.Domain.ValueObjects
         public string Number { get; }
         public DateTime Date { get; }
         public string Currency { get; }
+
+        public static ExchangeRate Default => new ExchangeRate(1, string.Empty, DateTime.Now, DefaultCurrency);
 
         protected override IEnumerable<object> GetEqualityComponents()
         {

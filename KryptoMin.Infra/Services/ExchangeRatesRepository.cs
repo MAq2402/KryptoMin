@@ -11,7 +11,6 @@ namespace KryptoMin.Infra.Services
 {
     public class ExchangeRatesRepository : AzureTableStorageRepository, IExchangeRatesRepository
     {
-        private const string PLN = "PLN";
         private readonly CloudTable _exchangeRates;
 
         public ExchangeRatesRepository(DbSettings dbSettings) : base(dbSettings)
@@ -25,15 +24,8 @@ namespace KryptoMin.Infra.Services
             var result = new List<ExchangeRate>();
             foreach (var request in requests)
             {
-                if (request.Currency == PLN)
-                {
-                    result.Add(new ExchangeRate(1, string.Empty, request.Date, PLN));
-                }
-                else
-                {
-                    var exchangeRate = exchangeRates.Where(x => ParseDate(x.Date) < request.Date).OrderByDescending(x => x.Date).First();
-                    result.Add(new ExchangeRate(GetValue(exchangeRate, request.Currency), exchangeRate.FullNumber, ParseDate(exchangeRate.Date), request.Currency));
-                }
+                var exchangeRate = exchangeRates.Where(x => ParseDate(x.Date) < request.Date).OrderByDescending(x => x.Date).First();
+                result.Add(new ExchangeRate(GetValue(exchangeRate, request.Currency), exchangeRate.FullNumber, ParseDate(exchangeRate.Date), request.Currency));
             }
 
             return await Task.FromResult(result);
