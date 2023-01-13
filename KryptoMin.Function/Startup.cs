@@ -31,7 +31,8 @@ namespace KryptoMin.Function
             var emailSettings = new EmailSettings(Environment.GetEnvironmentVariable("SendGridApiKey"), 
                 Environment.GetEnvironmentVariable("EmailAddress"), 
                 Environment.GetEnvironmentVariable("EmailName"), 
-                Environment.GetEnvironmentVariable("EmailContent"));
+                Environment.GetEnvironmentVariable("EmailContent"),
+                bool.Parse(Environment.GetEnvironmentVariable("EmailSendingTurnedOn")));
             builder.Services.AddSingleton<EmailSettings>(emailSettings);
 
             var dbSettings = new DbSettings(Environment.GetEnvironmentVariable("StorageConnectionString"));

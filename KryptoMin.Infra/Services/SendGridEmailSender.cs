@@ -23,21 +23,24 @@ namespace KryptoMin.Infra.Services
 
         public async Task Send(string email, TaxReport report)
         {
-            var client = new SendGridClient(_emailSettings.ApiKey);
-            var msg = new SendGridMessage()
+            if (_emailSettings.SendingTurnedOn)
             {
-                From = new EmailAddress(_emailSettings.Address, _emailSettings.Name),
-                Subject = "KryptoMin Raport",
-                PlainTextContent = "KryptoMin Raport",
-                HtmlContent = _emailSettings.Content,
-            };
-            msg.AddTo(new EmailAddress(email));
+                var client = new SendGridClient(_emailSettings.ApiKey);
+                var msg = new SendGridMessage()
+                {
+                    From = new EmailAddress(_emailSettings.Address, _emailSettings.Name),
+                    Subject = "KryptoMin Raport",
+                    PlainTextContent = "KryptoMin Raport",
+                    HtmlContent = _emailSettings.Content,
+                };
+                msg.AddTo(new EmailAddress(email));
 
-            var response = await client.SendEmailAsync(msg);
+                var response = await client.SendEmailAsync(msg);
 
-            if(!response.IsSuccessStatusCode) 
-            {
-                throw new FailedToSendEmailException("Sending email with report failed");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new FailedToSendEmailException("Sending email with report failed");
+                }
             }
         }
     }
