@@ -14,9 +14,9 @@ variables:
   # Function app name
   functionAppName: 
     ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
-      value: KryptoMinProd
+      functionAppName: KryptoMinProd
     ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
-      value: KryptoMinDev
+      functionAppName: KryptoMinDev
   
   # Agent VM image name
   vmImageName: 'windows-2019'
