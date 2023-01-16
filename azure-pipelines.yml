@@ -12,11 +12,10 @@ variables:
   azureSubscription: '1d31415e-7f05-4563-9641-01d3419ae708'
 
   # Function app name
-  functionAppName: 
-    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
-      functionAppName: 'KryptoMinProd'
-    ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
-      functionAppName: 'KryptoMinDev'
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+    functionAppName: 'KryptoMinProd'
+  ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
+    functionAppName: 'KryptoMinDev'
   
   # Agent VM image name
   vmImageName: 'windows-2019'
