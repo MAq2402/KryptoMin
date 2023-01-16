@@ -5,14 +5,19 @@
 
 trigger:
 - master
+- develop
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: '1d31415e-7f05-4563-9641-01d3419ae708'
 
   # Function app name
-  functionAppName: 'KryptoMinProd'
-
+  functionAppName: 
+    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+      value: KryptoMinProd
+    ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
+      value: KryptoMinDev
+  
   # Agent VM image name
   vmImageName: 'windows-2019'
 
