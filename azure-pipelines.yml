@@ -14,7 +14,7 @@ variables:
   # Function app name
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     functionAppName: 'KryptoMinProd'
-  ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
     functionAppName: 'KryptoMinDev'
   
   # Agent VM image name
