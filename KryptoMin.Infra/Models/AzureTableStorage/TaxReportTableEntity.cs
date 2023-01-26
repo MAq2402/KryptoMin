@@ -24,12 +24,12 @@ namespace KryptoMin.Infra.Models.AzureTableStorage
             Tax = Decimal.ToDouble(report.Tax);
         }
 
-        public double Revenue { get; }
-        public double Costs { get; }
-        public double PreviousYearsCosts { get; }
-        public double Income { get; }
-        public double CurrentYearCosts { get; }
-        public double Tax { get; }
+        public double Revenue { get; set; }
+        public double Costs { get; set; }
+        public double PreviousYearsCosts { get; set; }
+        public double Income { get; set; }
+        public double CurrentYearCosts { get; set; }
+        public double Tax { get; set; }
         public string OwnerEmail { get; set; }
         public int Status { get; set; }
 
