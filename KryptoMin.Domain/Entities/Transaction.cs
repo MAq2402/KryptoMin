@@ -1,4 +1,4 @@
-using System.Linq;
+using CSharpFunctionalExtensions;
 using KryptoMin.Domain.ValueObjects;
 
 namespace KryptoMin.Domain.Entities
@@ -50,23 +50,23 @@ namespace KryptoMin.Domain.Entities
                 exchangeRates.Where(x => x.Date < Date).OrderByDescending(x => x.Date).First(x => x.Currency == currency);
         }
 
-        public decimal CalculateProfits()
+        public Result<decimal> CalculateProfits()
         {
             if (IsSell)
             {
                 if (ExchangeRateForAmount is null)
                 {
-                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
+                    return Result.Failure<decimal>("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals);
+                return Result.Success(Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals));
             }
             else
             {
-                return 0m;
+                return Result.Success(0.0m);
             }
         }
 
-        public decimal CalculateCosts()
+        public Result<decimal> CalculateCosts()
         {
             if (IsSell)
             {
@@ -76,25 +76,27 @@ namespace KryptoMin.Domain.Entities
             {
                 if (ExchangeRateForAmount is null)
                 {
-                    throw new InvalidOperationException("Before calculating profits exchange rates for amount should be loaded.");
+                    return Result.Failure<decimal>("Before calculating profits exchange rates for amount should be loaded.");
                 }
-                return Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals) + FeesCosts();
+                var feesCostsResult = FeesCosts();
+                return feesCostsResult.IsFailure ? feesCostsResult : 
+                    Result.Success(Math.Round(Amount.Value * ExchangeRateForAmount.Value, Decimals) + feesCostsResult.Value);
             }
         }
 
-        private decimal FeesCosts()
+        private Result<decimal> FeesCosts()
         {
             if (HasFees)
             {
                 if (ExchangeRateForFees is null)
                 {
-                    throw new InvalidOperationException("Before calculating costs exchange rates for fees should be loaded.");
+                    return Result.Failure<decimal>("Before calculating costs exchange rates for fees should be loaded.");
                 }
-                return Math.Round(Fees.Value * ExchangeRateForFees.Value, Decimals);
+                return Result.Success(Math.Round(Fees.Value * ExchangeRateForFees.Value, Decimals));
             }
             else
             {
-                return 0.0m;
+                return Result.Success(0.0m);
             }
         }
     }

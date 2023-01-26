@@ -8,6 +8,7 @@ using KryptoMin.Application.Contracts;
 using System.IO;
 using Newtonsoft.Json;
 using KryptoMin.Application.Dtos;
+using System.Net;
 
 namespace KryptoMin.Function
 {
@@ -28,10 +29,15 @@ namespace KryptoMin.Function
             var request = JsonConvert.DeserializeObject<GenerateRequestDto>
                 (await new StreamReader(req.Body).ReadToEndAsync());
             var result = await _service.Generate(request);
-            
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            return new OkObjectResult(result);
+            log.LogInformation("C# HTTP trigger function processed a request.");
+            if (result.IsFailure)
+            {
+                log.LogError(result.Error);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+            return new OkObjectResult(result.Value);
         }
     }
 }

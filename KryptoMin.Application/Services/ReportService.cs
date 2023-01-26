@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.Entities;
@@ -19,13 +20,13 @@ namespace KryptoMin.Application.Services
             _exchangeRateProvider = exchangeRateProvider;
         }
 
-        public async Task<ReportResponseDto> Send(SendReportRequestDto request)
+        public async Task<Result<ReportResponseDto>> Send(SendReportRequestDto request)
         {
             var report = await _reportRepository.Get(new Guid(request.PartitionKey), new Guid(request.RowKey));
 
             if (report is null)
             {
-                throw new ArgumentNullException("Report with given ids has not been found.");
+                return Result.Failure<ReportResponseDto>("Report with given ids has not been found.");
             }
 
             try
@@ -79,7 +80,7 @@ namespace KryptoMin.Application.Services
             };
         }
 
-        public async Task<GenerateResponseDto> Generate(GenerateRequestDto request)
+        public async Task<Result<GenerateResponseDto>> Generate(GenerateRequestDto request)
         {
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
@@ -93,12 +94,19 @@ namespace KryptoMin.Application.Services
 
             var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);
 
-            await _reportRepository.Add(report);
-            return new GenerateResponseDto
+            if (report.GenerationSucceded.IsFailure)
             {
-                PartitionKey = report.PartitionKey.ToString(),
-                RowKey = report.RowKey.ToString()
-            };
+                return Result.Failure<GenerateResponseDto>(report.GenerationSucceded.Error);
+            }
+            else
+            {
+                await _reportRepository.Add(report);
+                return new GenerateResponseDto
+                {
+                    PartitionKey = report.PartitionKey.ToString(),
+                    RowKey = report.RowKey.ToString()
+                };
+            }
         }
     }
 }
