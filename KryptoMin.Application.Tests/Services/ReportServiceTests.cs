@@ -29,7 +29,7 @@ namespace KryptoMin.Application.Tests.Services
                 RowKey = Guid.NewGuid().ToString(),
                 Email = "mail@test.com"
             };
-            var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(), 
+            var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(),
                 0, "", TaxReportStatus.Created);
             repository.Setup(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey))).ReturnsAsync(taxReport);
             var sut = new ReportService(emailSender.Object, repository.Object, exchangeRateProvider.Object);
@@ -77,7 +77,7 @@ namespace KryptoMin.Application.Tests.Services
                 RowKey = Guid.NewGuid().ToString(),
                 Email = "mail@test.com"
             };
-            var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(), 
+            var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(),
                 0, "", TaxReportStatus.Created);
             repository.Setup(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey))).ReturnsAsync(taxReport);
             emailSender.Setup(x => x.Send(request.Email, taxReport)).ThrowsAsync(new Exception());
@@ -141,13 +141,14 @@ namespace KryptoMin.Application.Tests.Services
             };
 
             var actual = await sut.Generate(taxReportRequest);
-    
+
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "PLN" && x.Date == DateTime.Parse("2022-05-18")))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "EUR" && x.Date == DateTime.Parse("2022-05-17")))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == DateTime.Parse("2022-05-17")))), Times.Once);
             exchangeRateProvider.Verify(x => x.Get(It.Is<IEnumerable<ExchangeRateRequestDto>>(x => x.Any(x => x.Currency == "USD" && x.Date == DateTime.Parse("2022-05-16")))), Times.Once);
             reportRepository.Verify(x => x.Add(It.IsAny<TaxReport>()), Times.Once);
             actual.Should().NotBeNull();
+            actual.IsSuccess.Should().BeTrue();
         }
     }
 }

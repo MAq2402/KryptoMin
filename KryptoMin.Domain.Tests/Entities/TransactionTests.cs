@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CSharpFunctionalExtensions.FluentAssertions;
 using FluentAssertions;
 using KryptoMin.Domain.Entities;
 using KryptoMin.Domain.ValueObjects;
@@ -25,7 +26,7 @@ public class TransactionTests
         };
         transaction.AssignExchangeRates(exchangeRates);
 
-        transaction.CalculateCosts().Should().Be(expectedCost);
+        transaction.CalculateCosts().Should().SucceedWith(expectedCost);
     }
 
     public static IEnumerable<object[]> Transaction_CalculateCosts_ShouldThrowInvalidOperationException_Data
@@ -42,9 +43,7 @@ public class TransactionTests
             new Amount("231.27 USD"),
             new Amount("231.27 USD"), isSell);
 
-        Action act = () => transaction.CalculateCosts();
-
-        act.Should().ThrowExactly<InvalidOperationException>();
+        transaction.CalculateCosts().Should().Fail();
     }
 
     public static IEnumerable<object[]> Transaction_CalculateProfits_ShouldThrowInvalidOperationException_Data
@@ -60,9 +59,7 @@ public class TransactionTests
             new Amount("231.27 USD"),
             new Amount("231.27 USD"), isSell);
 
-        Action act = () => transaction.CalculateProfits();
-
-        act.Should().ThrowExactly<InvalidOperationException>();
+        transaction.CalculateProfits().Should().Fail("Before calculating profits exchange rates for amount should be loaded.");
     }
 
     [Theory]
@@ -81,7 +78,7 @@ public class TransactionTests
         };
         transaction.AssignExchangeRates(exchangeRates);
 
-        transaction.CalculateProfits().Should().Be(expectedProfits);
+        transaction.CalculateProfits().Should().SucceedWith(expectedProfits);
     }
 
     [Fact]
