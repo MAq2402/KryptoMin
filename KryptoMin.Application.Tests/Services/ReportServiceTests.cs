@@ -12,6 +12,7 @@ using KryptoMin.Domain.ValueObjects;
 using Moq;
 using Xunit;
 using System.Linq;
+using CSharpFunctionalExtensions.FluentAssertions;
 
 namespace KryptoMin.Application.Tests.Services
 {
@@ -58,7 +59,9 @@ namespace KryptoMin.Application.Tests.Services
             repository.Setup(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey))).ReturnsAsync(default(TaxReport));
             var sut = new ReportService(emailSender.Object, repository.Object, exchangeRateProvider.Object);
 
-            await sut.Invoking(x => x.Send(request)).Should().ThrowExactlyAsync<ArgumentNullException>("Report with given ids has not been found");
+            var actual = await sut.Send(request);
+
+            actual.Should().Fail("Report with given ids has not been found");
 
             repository.Verify(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey)), Times.Once);
             emailSender.Verify(x => x.Send(request.Email, It.IsAny<TaxReport>()), Times.Never);

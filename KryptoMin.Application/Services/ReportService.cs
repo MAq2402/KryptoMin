@@ -20,13 +20,13 @@ namespace KryptoMin.Application.Services
             _exchangeRateProvider = exchangeRateProvider;
         }
 
-        public async Task<ReportResponseDto> Send(SendReportRequestDto request)
+        public async Task<Result<ReportResponseDto>> Send(SendReportRequestDto request)
         {
             var report = await _reportRepository.Get(new Guid(request.PartitionKey), new Guid(request.RowKey));
 
             if (report is null)
             {
-                throw new ArgumentNullException("Report with given ids has not been found.");
+                return Result.Failure<ReportResponseDto>("Report with given ids has not been found.");
             }
 
             try

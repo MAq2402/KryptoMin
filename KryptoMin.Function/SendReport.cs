@@ -28,7 +28,11 @@ namespace KryptoMin.Function
             var request = JsonConvert.DeserializeObject<SendReportRequestDto>
                 (await new StreamReader(req.Body).ReadToEndAsync());
 
-            return new OkObjectResult(await _reportService.Send(request));
+            var result = await _reportService.Send(request);
+
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            return result.IsFailure ? new NotFoundResult() : new OkObjectResult(result.Value);
         }
     }
 }
