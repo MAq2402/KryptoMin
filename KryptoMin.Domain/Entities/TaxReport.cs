@@ -15,12 +15,23 @@ namespace KryptoMin.Domain.Entities
             IEnumerable<Transaction> transactions,
             decimal previousYearCosts,
             string ownerEmail,
-            TaxReportStatus status) : base(partitionKey, rowKey)
+            TaxReportStatus status,
+            decimal revenue,
+            decimal costs,
+            decimal income,
+            decimal currentYearCosts,
+            decimal tax) : base(partitionKey, rowKey)
         {
             _transactions = transactions.ToList();
             PreviousYearsCosts = previousYearCosts;
             OwnerEmail = ownerEmail;
             Status = status;
+            Revenue = revenue;
+            Costs = costs;
+            Income = income;
+            CurrentYearCosts = currentYearCosts;
+            Tax = tax; 
+            GenerationSucceded = Result.Success();
         }
 
         private TaxReport(Guid partitionKey,
@@ -68,7 +79,6 @@ namespace KryptoMin.Domain.Entities
         public decimal Income { get; }
         public decimal CurrentYearCosts { get; }
         public decimal Tax { get; }
-
         public IEnumerable<Transaction> Transactions => _transactions;
         public string OwnerEmail { get; private set; }
         public TaxReportStatus Status { get; private set; }
