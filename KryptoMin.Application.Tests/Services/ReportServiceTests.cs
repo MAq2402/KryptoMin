@@ -31,7 +31,7 @@ namespace KryptoMin.Application.Tests.Services
                 Email = "mail@test.com"
             };
             var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(),
-                0, "", TaxReportStatus.Created);
+                0, "", TaxReportStatus.Created, 0, 0, 0, 0, 0);
             repository.Setup(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey))).ReturnsAsync(taxReport);
             var sut = new ReportService(emailSender.Object, repository.Object, exchangeRateProvider.Object);
 
@@ -81,7 +81,7 @@ namespace KryptoMin.Application.Tests.Services
                 Email = "mail@test.com"
             };
             var taxReport = new TaxReport(Guid.NewGuid(), Guid.NewGuid(), new List<Transaction>(),
-                0, "", TaxReportStatus.Created);
+                0, "", TaxReportStatus.Created, 0, 0, 0, 0, 0);
             repository.Setup(x => x.Get(new Guid(request.PartitionKey), new Guid(request.RowKey))).ReturnsAsync(taxReport);
             emailSender.Setup(x => x.Send(request.Email, taxReport)).ThrowsAsync(new Exception());
             var sut = new ReportService(emailSender.Object, repository.Object, exchangeRateProvider.Object);
