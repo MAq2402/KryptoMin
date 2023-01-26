@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using KryptoMin.Application.Contracts;
 using KryptoMin.Application.Dtos;
 using KryptoMin.Domain.Entities;
@@ -79,7 +80,7 @@ namespace KryptoMin.Application.Services
             };
         }
 
-        public async Task<GenerateResponseDto> Generate(GenerateRequestDto request)
+        public async Task<Result<GenerateResponseDto>> Generate(GenerateRequestDto request)
         {
             var reportId = Guid.NewGuid();
             var transactions = request.Transactions.Select(x =>
@@ -93,12 +94,19 @@ namespace KryptoMin.Application.Services
 
             var report = TaxReport.Generate(reportId, Guid.NewGuid(), transactions, exchangeRates, request.PreviousYearLoss);
 
-            await _reportRepository.Add(report);
-            return new GenerateResponseDto
+            if (report.GenerationSucceded.IsFailure)
             {
-                PartitionKey = report.PartitionKey.ToString(),
-                RowKey = report.RowKey.ToString()
-            };
+                return Result.Failure<GenerateResponseDto>(report.GenerationSucceded.Error);
+            }
+            else
+            {
+                await _reportRepository.Add(report);
+                return new GenerateResponseDto
+                {
+                    PartitionKey = report.PartitionKey.ToString(),
+                    RowKey = report.RowKey.ToString()
+                };
+            }
         }
     }
 }

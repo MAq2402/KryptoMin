@@ -61,14 +61,14 @@ namespace KryptoMin.Domain.Tests.Entities
             report.Income.Should().Be(expectedIncome);
             report.CurrentYearCosts.Should().Be(expectedCurrentYearCosts);
             report.Tax.Should().Be(expectedTax);
-            report.Transactions.ToList()[0].CalculateProfits().Should().Be(expectedProfits1);
-            report.Transactions.ToList()[0].CalculateCosts().Should().Be(expoectedCosts1);
-            report.Transactions.ToList()[1].CalculateProfits().Should().Be(expectedProfits2);
-            report.Transactions.ToList()[1].CalculateCosts().Should().Be(expectedCosts2);
-            report.Transactions.ToList()[2].CalculateProfits().Should().Be(expectedProfits3);
-            report.Transactions.ToList()[2].CalculateCosts().Should().Be(expectedCosts3);
-            report.Transactions.ToList()[3].CalculateProfits().Should().Be(expectedProfits4);
-            report.Transactions.ToList()[3].CalculateCosts().Should().Be(expectedCosts4);
+            report.Transactions.ToList()[0].CalculateProfits().Value.Should().Be(expectedProfits1);
+            report.Transactions.ToList()[0].CalculateCosts().Value.Should().Be(expoectedCosts1);
+            report.Transactions.ToList()[1].CalculateProfits().Value.Should().Be(expectedProfits2);
+            report.Transactions.ToList()[1].CalculateCosts().Value.Should().Be(expectedCosts2);
+            report.Transactions.ToList()[2].CalculateProfits().Value.Should().Be(expectedProfits3);
+            report.Transactions.ToList()[2].CalculateCosts().Value.Should().Be(expectedCosts3);
+            report.Transactions.ToList()[3].CalculateProfits().Value.Should().Be(expectedProfits4);
+            report.Transactions.ToList()[3].CalculateCosts().Value.Should().Be(expectedCosts4);
         }
     }
 }
